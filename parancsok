@@ -1,0 +1,9 @@
+npm install -g @vue/cli
+vue create my-vue-app
+cd my-vue-app
+
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/Alex1842/alpha.git
+git push -u origin master
