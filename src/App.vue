@@ -1,35 +1,46 @@
 <template>
   <Background></Background>
-  <h1>Lorem Ipsum</h1>
-  <section class="game-board" :style="gridStyles">
-    <Card class="card" v-for="num in nArray" :key="num" :id="num" :value="num"></Card>
+  <section>
+    <CoinsCounter :coins="coins"></CoinsCounter>
+    <p>
+      <button @click="coins++">💰</button>
+    </p>
+    <Worker v-for="worker in workers" :key="worker.id" :worker="worker" :coins="coins" @pay="payWorker"></Worker>
   </section>
 </template>
 
 <script>
 import Background from './components/Background.vue';
-import Card from './components/Card.vue';
+import Worker from './components/Worker.vue';
+import CoinsCounter from './components/CoinsCounter.vue';
+import content from './content/workers.json';
 
 export default {
   name: 'App',
   components: {
     Background,
-    Card
+    CoinsCounter,
+    Worker
   },
-  data() {
+  data: function () {
     return {
-      n: 5 // Alapértelmezett grid méret, de dinamikusan módosítható
+      coins: 0,
+      workers: content.map(worker => ({ ...worker, amount: 0 }))
     };
   },
-  computed: {
-    nArray() {
-      return Array.from({ length: this.n * this.n }, (_, i) => i);
-    },
-    gridStyles() {
-      return {
-        gridTemplateColumns: `repeat(${this.n}, 50px)`,
-        gridTemplateRows: `repeat(${this.n}, 50px)`,
-      };
+  mounted: function () {
+    setInterval(() => {
+      this.coins += 1 * this.workers[0].amount * 1
+      this.coins += 1 * this.workers[1].amount * 3
+      this.coins += 1 * this.workers[2].amount * 5
+    }, 420)
+  },
+  methods: {
+    payWorker(workerIndex, paymentAmount) {
+      if (this.coins >= paymentAmount) {
+        this.coins -= paymentAmount;
+        this.workers[workerIndex].amount++;
+      }
     }
   }
 }
@@ -65,34 +76,5 @@ export default {
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.game-board {
-  display: grid;
-  grid-gap: 10px;
-  justify-content: center;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-@media (min-width: 600px) {
-  .game-board {
-    grid-gap: 15px;
-  }
-
-  .card {
-    font-size: 2rem;
-  }
-}
-
-@media (min-width: 900px) {
-  .game-board {
-    grid-gap: 20px;
-  }
-
-  .card {
-    font-size: 2.5rem;
-  }
 }
 </style>

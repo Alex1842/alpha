@@ -1,0 +1,24 @@
+[{
+        "id": "0",
+        "name": "Worker1",
+        "amount": 0,
+        "price": "10"
+    },
+    {
+        "id": "1",
+        "name": "Worker2",
+        "amount": 0,
+        "price": "30"
+    },
+    {
+        "id": "2",
+        "name": "Worker3",
+        "amount": 0,
+        "price": "50"
+    }, {
+        "id": "3",
+        "name": "Worker4",
+        "amount": 0,
+        "price": "100"
+    }
+]
