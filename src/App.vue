@@ -5,7 +5,7 @@
     <p>
       <button @click="coins++">💰</button>
     </p>
-    <Worker v-for="worker in workers" :key="worker.id" :worker="worker" :coins="coins" @pay="payWorker"></Worker>
+    <Worker v-for="(worker, i) in workers" :key="i" :worker="worker" :coins="coins" @pay="payWorker"></Worker>
   </section>
 </template>
 
@@ -25,15 +25,20 @@ export default {
   data: function () {
     return {
       coins: 0,
-      workers: content.map(worker => ({ ...worker, amount: 0 }))
+      idCounter: 0,
+      workers: content.map((worker, index) => ({
+        ...worker,
+        id: index
+      }))
     };
   },
   mounted: function () {
-    setInterval(() => {
-      this.coins += 1 * this.workers[0].amount * 1
-      this.coins += 1 * this.workers[1].amount * 3
-      this.coins += 1 * this.workers[2].amount * 5
-    }, 420)
+    this.workers.forEach((worker) => {
+      setInterval(() => {
+        this.coins += worker.amount * worker.earn
+      }, worker.speed * 1000)
+
+    })
   },
   methods: {
     payWorker(workerIndex, paymentAmount) {
