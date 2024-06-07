@@ -1,23 +1,41 @@
 <template>
   <div>
-    <div class="item" @click="startProgress" :disabled="coins < worker.price || isProgressing">
-      <div class="item-icon">
-        <img :src="workerImg" alt="Dynamic Image" />
+    <div class="container d-flex flex-column item">
+      <div class="row flex-grow-1">
+        <div class="col-md-3">
+          <!-- <div class="item-icon" @click="startProgress" :disabled="coins < currentPrice || isProgressing"> -->
+          <div class="item-icon" @click="getGem" :disabled="isProgressing">
+            <img class="floating-element" :src="workerImg" alt="Dynamic Image" />
+          </div>
+        </div>
+        <div class="col-md-9 d-flex flex-column">
+          <div class="row flex-grow-1">
+            <div class="col-md-8 bordered">
+              <div class="item-info">
+                <div class="item-name">{{ worker.name }}</div>
+              </div>
+            </div>
+            <div class="col-md-4 bordered">
+              <div class="item-upgrade" v-if="worker.id > 0" @click="upgradeWorker" :disabled="coins < currentPrice" > ↑ {{ currentPrice.toFixed(2) }} $</div>
+              <div class="item-amount"><!-- {{ worker.amount }} --></div>
+            </div>
+          </div>
+          <div class="row flex-grow-1">
+            <div class="col-md-12 bordered">
+              <div id="progress-bar-container">
+                <div id="progress-bar" :style="{ width: progress + '%' }">
+                  <div class="item-price"> {{ currentEarn.toFixed(2) }} $</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="item-info">
-        <div class="item-name">{{ worker.name }}</div>
-        <div class="item-price">{{ worker.price }}</div>
-        <div class="item-amount">{{ worker.amount }}</div>
-      </div>
-    </div>
-    <div id="progress-bar-container">
-      <div id="progress-bar" :style="{ width: progress + '%' }"></div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
+<script>export default {
   name: 'VWorker',
   props: {
     worker: {
@@ -41,23 +59,21 @@ export default {
     };
   },
   methods: {
-    payWorker() {
-      if (this.coins >= this.worker.price) {
-        this.$emit('pay', this.worker.id, this.worker.price);
+    upgradeWorker() {
+      if (this.coins >= this.currentPrice) {
+        this.$emit('upgrade', this.worker.id, this.currentPrice);
       }
     },
     rewardWorker() {
-      this.$emit('reward', this.worker.id, this.worker.earn);
+      this.$emit('reward', this.worker.id, this.currentEarn);
     },
-    startProgress() {
-      if (this.coins < this.worker.price || this.isProgressing) return;
-      this.payWorker();
+    getGem(){
+      if (this.isProgressing) return;
       this.progress = 0;
       this.isProgressing = true;
 
       const intervalDuration = 100;
       const progressIncrement = 100 / (this.worker.speed * 1000 / intervalDuration);
-
       this.intervalId = setInterval(() => {
         this.progress += progressIncrement;
 
@@ -68,41 +84,59 @@ export default {
           setTimeout(() => {
             this.progress = 0;
             this.isProgressing = false;
-          }, 500);
+          }, 100);
         }
       }, intervalDuration);
+    },
+    calculatePrice(basePrice, growthRate, currentOwned) {
+      return basePrice * Math.pow(growthRate, currentOwned);
+    },
+    calculateEarn(baseEarn, growthRate, currentOwned) {
+      return baseEarn * Math.pow(growthRate, currentOwned);
     }
   },
-  emits: ['pay', 'reward']
-};
-</script>
+  computed: {
+    currentPrice() {
+      if (this.worker.id == 0) {
+        return this.worker.price
+      }
+      return this.calculatePrice(this.worker.price, 1.15, this.worker.amount);
+    },
+    currentEarn() {
+      if (this.worker.id == 0) {
+        return this.worker.earn
+      }
+      return this.calculateEarn(this.worker.earn, 1.05, this.worker.amount);
+    }
+  },
+  emits: ['upgrade', 'reward']
+};</script>
 
 <style scoped>
 .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #c1a772;
-  cursor: pointer;
+  padding: 20px 37px;
+  background-image: url("/src/assets/images/background/workerbg.png");
+  background-size: cover;
 }
 
-.item[disabled=true] {
-  opacity: 0.2;
-}
 
 .item:last-child {
   border-bottom: none;
 }
 
 .item-icon {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
+  cursor: pointer;
+}
+
+.item-icon[disabled=true] {
+  opacity: 0.2;
 }
 
 .item-icon img {
-  max-height: 40px;
+  border: 3px solid #692222;
+  outline: 1px solid #fdd627;
+  outline-offset: -5px;
+  max-height: 80px;
 }
 
 .item-info {
@@ -117,8 +151,15 @@ export default {
 }
 
 .item-price {
-  font-size: 16px;
+  font-size: 33px;
   color: #a57843;
+}
+.item-upgrade{
+  font-size: 20px;
+    background: bisque;
+    border-radius: 3px;
+    position: absolute;
+    cursor: pointer;
 }
 
 .item-amount {
@@ -127,17 +168,26 @@ export default {
 }
 
 #progress-bar-container {
-  width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 25px;
-  overflow: hidden;
-  margin-top: 10px;
+  width: 300px;
+    background-color: rgb(58 0 0 / 66%);
+    border-radius: 7px;
+    overflow: hidden;
+    border: 2px solid rgb(130 174 16 / 26%);
 }
 
 #progress-bar {
-  height: 10px;
-  background-color: #76c7c0;
+  height: 40px;
+  background-color: #f8c928;
   transition: width 0.1s linear;
-  border-radius: 25px 0 0 25px;
 }
 </style>
+<style>
+.floating-element {
+    border-radius: 10px;
+    animation: float 2s ease-in-out infinite;
+}
+@keyframes float {
+    50% {
+      transform: scale(1.05);
+    }
+}</style>

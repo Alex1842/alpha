@@ -1,5 +1,5 @@
 <template>
-  <h1>coin: {{ coins }}</h1>
+  <h1> {{ coins.toFixed(2) }} $</h1>
 </template>
 
 <script>

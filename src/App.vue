@@ -4,18 +4,14 @@
     <CoinsCounter :coins="coins"></CoinsCounter>
     <div class="d-flex">
       <div class="store">
-        <Worker
-          v-for="(worker, i) in workersWithImages"
-          :key="i"
-          :worker="worker"
-          :workerImg="workerImages[i]"
-          :coins="coins"
-          @pay="payWorker"
-          @reward="rewardWorker"
-        ></Worker>
+        <div class="store-item" v-for="(worker, i) in workersWithImages" :key="i">
+          <Worker v-if="worker.active" :worker="worker" :workerImg="workerImages[i]" :coins="coins" @upgrade="upgradeWorker"
+            @reward="rewardWorker">
+          </Worker>
+        </div>
       </div>
       <div class="button-container">
-        <div class="farmButton" @click="coins++"></div>
+        <div class="farmButton" @click="coins = coins + this.basicFarm"></div>
       </div>
     </div>
   </section>
@@ -34,15 +30,18 @@ export default {
     CoinsCounter,
     Worker
   },
-  data: function () {
+  data() {
     return {
       coins: 0,
+      basicFarm: 0.25,
       idCounter: 0,
       workers: content.map((worker, index) => ({
         ...worker,
-        id: index
+        id: index,
+        amount: 0,
+        active: index === 0
       })),
-      workerImages: [],
+      workerImages: []
     };
   },
   computed: {
@@ -50,7 +49,7 @@ export default {
       return this.workers.filter((_, i) => this.workerImages[i]);
     }
   },
-  mounted: function () {
+  mounted() {
     const imagePromises = this.workers.map(worker => {
       return import(`@/assets/images/gems/${worker.icon}.png`)
         .then(module => module.default)
@@ -65,21 +64,39 @@ export default {
     });
   },
   methods: {
-    payWorker(workerId, paymentAmount) {
-      if (this.coins >= paymentAmount) {
-        this.coins -= paymentAmount;
-        const worker = this.workers.find(w => w.id === workerId);
-        worker.amount++;
-      }
+    upgradeWorker(workerId, paymentAmount) {
+      this.coins -= paymentAmount;
+      const worker = this.workers.find(w => w.id === workerId);
+      worker.amount++;
     },
     rewardWorker(workerId, earnAmount) {
       this.coins += earnAmount;
+      const nextInactiveWorker = this.workers.find(w => !w.active);
+      if (nextInactiveWorker && this.coins >= nextInactiveWorker.price) {
+        nextInactiveWorker.active = true;
+      }
     }
   }
 }
 </script>
 
 <style>
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;    
+    -ms-user-select: none;     
+    user-select: none;         
+}
+@font-face {
+    font-family: 'HoneyCrepes';
+    src: url('/src/assets/fonts/Honey_Crepes.otf') format('opentype'),
+         url('/src/assets/fonts/Honey_Crepes.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+*{
+  font-family: 'HoneyCrepes', sans-serif !important;
+}
 .button-container {
   position: absolute;
   left: 50px;
@@ -105,6 +122,7 @@ export default {
   position: relative;
 }
 </style>
+
 
 <style>
 #app {
@@ -134,15 +152,7 @@ export default {
 }
 
 .store {
-  width: 300px;
-  background-color: #d1b68c;
-  border: 2px solid #6a4b28;
-  border-radius: 8px;
   margin-left: 20px;
-  padding: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  max-height: 500px;
-  overflow-y: scroll;
 }
 </style>
 

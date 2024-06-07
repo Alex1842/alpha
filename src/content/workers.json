@@ -1,39 +1,35 @@
 [{
         "name": "Kvarckő",
         "icon": "G1",
-        "amount": 0,
-        "price": 10,
-        "earn": 3,
-        "speed": 1
+        "price": 0,
+        "earn": 1,
+        "speed": 0.1
     },
     {
         "name": "Hajnal Rubin",
         "icon": "G2",
-        "amount": 0,
-        "price": 30,
-        "earn": 10,
-        "speed": 0.5
+        "price": 3,
+        "earn": 5,
+        "speed": 1,
+        "levelcaps": [13, 20]
     },
     {
         "name": "Holdkráter Opál",
         "icon": "G3",
-        "amount": 0,
-        "price": 50,
-        "earn": 20,
-        "speed": 0.3
+        "price": 10,
+        "earn": 13,
+        "speed": 5
     },
     {
         "name": "Parázsló Topáz",
         "icon": "G4",
-        "amount": 0,
-        "price": 100,
+        "price": 5,
         "earn": 30,
-        "speed": 0.5
+        "speed": 10
     },
     {
         "name": "Csillagfény Gyémánt",
         "icon": "G5",
-        "amount": 0,
         "price": 200,
         "earn": 150,
         "speed": 0.5
@@ -41,7 +37,6 @@
     {
         "name": "Örvény Gránát",
         "icon": "G6",
-        "amount": 0,
         "price": 200,
         "earn": 150,
         "speed": 0.5
@@ -49,7 +44,6 @@
     {
         "name": "Kozmikus Zafír",
         "icon": "G7",
-        "amount": 0,
         "price": 200,
         "earn": 150,
         "speed": 0.5
@@ -57,7 +51,6 @@
     {
         "name": "Misztikus Achát",
         "icon": "G8",
-        "amount": 0,
         "price": 200,
         "earn": 150,
         "speed": 0.5
@@ -65,7 +58,6 @@
     {
         "name": "Galaxis Ametiszt",
         "icon": "G9",
-        "amount": 0,
         "price": 200,
         "earn": 150,
         "speed": 0.5
