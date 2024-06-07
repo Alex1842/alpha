@@ -15,4 +15,8 @@ export default {
 </script>
 
 <style scoped>
+h1{
+  background: grey;
+    color: white;
+}
 </style>

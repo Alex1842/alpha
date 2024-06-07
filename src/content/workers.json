@@ -1,33 +1,70 @@
 [{
-        "name": "Worker1",
+        "name": "Kvarckő",
+        "icon": "G1",
         "amount": 0,
         "price": 10,
         "earn": 3,
         "speed": 1
     },
     {
-        "name": "Worker2",
+        "name": "Hajnal Rubin",
+        "icon": "G2",
         "amount": 0,
         "price": 30,
         "earn": 10,
         "speed": 0.5
     },
     {
-        "name": "Worker3",
+        "name": "Holdkráter Opál",
+        "icon": "G3",
         "amount": 0,
         "price": 50,
         "earn": 20,
         "speed": 0.3
     },
     {
-        "name": "Worker4",
+        "name": "Parázsló Topáz",
+        "icon": "G4",
         "amount": 0,
         "price": 100,
         "earn": 30,
         "speed": 0.5
     },
     {
-        "name": "Worker5",
+        "name": "Csillagfény Gyémánt",
+        "icon": "G5",
+        "amount": 0,
+        "price": 200,
+        "earn": 150,
+        "speed": 0.5
+    },
+    {
+        "name": "Örvény Gránát",
+        "icon": "G6",
+        "amount": 0,
+        "price": 200,
+        "earn": 150,
+        "speed": 0.5
+    },
+    {
+        "name": "Kozmikus Zafír",
+        "icon": "G7",
+        "amount": 0,
+        "price": 200,
+        "earn": 150,
+        "speed": 0.5
+    },
+    {
+        "name": "Misztikus Achát",
+        "icon": "G8",
+        "amount": 0,
+        "price": 200,
+        "earn": 150,
+        "speed": 0.5
+    },
+    {
+        "name": "Galaxis Ametiszt",
+        "icon": "G9",
         "amount": 0,
         "price": 200,
         "earn": 150,

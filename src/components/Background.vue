@@ -1,6 +1,6 @@
 <template>
       <div class="background">
-        <div class="water"></div>
+       <!--  <div class="water"></div> -->
     </div>
 
     <svg class="svgBg">
@@ -33,7 +33,7 @@ body {
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-image: url("/src/assets/images/IMG_1064.JPG");
+    background-image: url("/src/assets/images/background/bg.png");
     background-size: cover;
 }
 
