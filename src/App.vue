@@ -10,9 +10,9 @@
           </Worker>
         </div>
       </div>
-      <div class="button-container">
+      <!-- <div class="button-container">
         <div class="farmButton" @click="coins = coins + this.basicFarm"></div>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>

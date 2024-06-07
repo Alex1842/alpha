@@ -128,7 +128,7 @@
   cursor: pointer;
 }
 
-.item-icon[disabled=true] {
+*[disabled=true] {
   opacity: 0.2;
 }
 
