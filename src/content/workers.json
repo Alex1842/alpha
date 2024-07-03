@@ -1,61 +1,61 @@
 [{
-        "name": "Kvarckő",
+        "name": "Quartz Stone",
         "icon": "G1",
         "price": 0,
         "earn": 1,
         "speed": 1
     },
     {
-        "name": "Hajnal Rubin",
+        "name": "Dawn Ruby",
         "icon": "G2",
         "price": 10,
         "earn": 5,
         "speed": 2
     },
     {
-        "name": "Holdkráter Opál",
+        "name": "Moon Crater Opal",
         "icon": "G3",
         "price": 50,
         "earn": 20,
         "speed": 4
     },
     {
-        "name": "Parázsló Topáz",
+        "name": "Smoldering Topaz",
         "icon": "G4",
         "price": 100,
         "earn": 50,
         "speed": 5
     },
     {
-        "name": "Csillagfény Gyémánt",
+        "name": "Starlight Diamond",
         "icon": "G5",
         "price": 500,
         "earn": 200,
         "speed": 1
     },
     {
-        "name": "Örvény Gránát",
+        "name": "Vortex Garnet",
         "icon": "G6",
         "price": 1000,
         "earn": 300,
         "speed": 0.5
     },
     {
-        "name": "Kozmikus Zafír",
+        "name": "Cosmic Sapphire",
         "icon": "G7",
         "price": 2000,
         "earn": 500,
         "speed": 0.25
     },
     {
-        "name": "Misztikus Achát",
+        "name": "Mystic Agate",
         "icon": "G8",
         "price": 5000,
         "earn": 1000,
         "speed": 0.1
     },
     {
-        "name": "Galaxis Ametiszt",
+        "name": "Galaxy Amethyst",
         "icon": "G9",
         "price": 10000,
         "earn": 2000,

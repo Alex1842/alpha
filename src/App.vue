@@ -10,9 +10,9 @@
           </Worker>
         </div>
       </div>
-      <!-- <div class="button-container">
+       <div class="button-container">
         <div class="farmButton" @click="coins = coins + this.basicFarm"></div>
-      </div> -->
+      </div> 
     </div>
   </section>
 </template>
@@ -33,11 +33,12 @@ export default {
   data() {
     return {
       coins: 0,
-      basicFarm: 0.25,
+      basicFarm: 250,
       idCounter: 0,
       workers: content.map((worker, index) => ({
         ...worker,
         id: index,
+        level: 0,
         amount: 0,
         active: index === 0
       })),
@@ -67,10 +68,12 @@ export default {
     upgradeWorker(workerId, paymentAmount) {
       this.coins -= paymentAmount;
       const worker = this.workers.find(w => w.id === workerId);
-      worker.amount++;
+      worker.level++;
     },
     rewardWorker(workerId, earnAmount) {
       this.coins += earnAmount;
+      const worker = this.workers.find(w => w.id === workerId);
+      worker.amount++;
       const nextInactiveWorker = this.workers.find(w => !w.active);
       if (nextInactiveWorker && this.coins >= nextInactiveWorker.price) {
         nextInactiveWorker.active = true;
@@ -105,7 +108,7 @@ body {
 
 .farmButton {
   background-image: url("/src/assets/images/buttons/earn.png");
-  width: 100px;
+  width: 70px;
   aspect-ratio: 1;
   background-size: contain;
   background-repeat: no-repeat;
