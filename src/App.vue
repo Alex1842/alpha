@@ -99,7 +99,7 @@ export default {
       };
       const jsonString = JSON.stringify(gameStatus);
       document.cookie = `alpha_gameStatus=${jsonString}`;
-      console.log('Game saved:', jsonString);
+      //console.log('Game saved:', jsonString);
     },
     loadGame() {
       const cookies = document.cookie.split('; ').find(row => row.startsWith('alpha_gameStatus='));

@@ -13,7 +13,7 @@
             <div class="item-info">
               <div class="item-name">{{ stone.name }}</div>
               <div :id="'progress-container-' + stone.id" class="progress-container">
-                <div class="progress-wave"></div>
+                <div class="progress-wave" :style="backgroundStyle"></div>
                 <div class="item-level">
                   lvl.
                   <span>{{ stone.level }}</span>
@@ -63,20 +63,54 @@ export default {
       progress: 0,
       isProgressing: false,
       intervalId: null,
-      tier: 0
+      tier: 0,
+      tierMap: {
+        0: 'red',
+        1: 'green',
+        2: 'blue',
+        3: 'yellow',
+        4: 'pink'
+      }
     };
   },
-
-  mounted() {
-    //console.log(this.worker)
-    this.setProgressLevel(this.stone.level, this.stone.levelCap);
+  computed: {
+    currentPrice() {
+      return this.stone.id === 0 ? this.stone.price : this.calculatePrice(this.stone.price, 1.15, this.stone.level);
+    },
+    currentEarn() {
+      return this.stone.id === 0 ? this.stone.earn : this.calculateEarn(this.stone.earn, 1.05, this.stone.level);
+    },
+    calcLevelProgress() {
+      const level = this.stone.level;
+      const maxLevel = this.stone.levelCap;
+      const tier = Math.floor(level / maxLevel)
+      let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
+      if (level !== 0 && level % maxLevel === 0) {
+        percentage = 0;
+      }
+      return { percentage, tier }
+    },
+    dynamicColor() {
+      return this.tierMap[this.tier] || 'black'; 
+    },
+    dynamicSVG() {
+      const color = this.dynamicColor;
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="${color}" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,218.7C384,235,480,245,576,229.3C672,213,768,171,864,138.7C960,107,1056,85,1152,85.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>`;
+    },
+    backgroundStyle() {
+      const color = this.dynamicColor;
+      const svgData = this.dynamicSVG;
+      const encodedSVG = encodeURIComponent(svgData);
+      const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
+      return { '--background': background };
+    }
   },
   methods: {
     upgradeStone() {
-      console.log(this.stone.id)
       if (this.coins >= this.currentPrice) {
         this.$emit('upgrade', this.stone.id, this.currentPrice);
-        this.setProgressLevel(this.stone.level, this.stone.levelCap);
+
+        this.setProgressLevel();
       }
     },
     getMoney() {
@@ -93,9 +127,9 @@ export default {
         this.progress += progressIncrement;
 
         if (this.progress >= 100) {
+          this.getMoney();
           this.progress = 100;
           clearInterval(this.intervalId);
-          this.getMoney();
           setTimeout(() => {
             this.progress = 0;
             this.isProgressing = false;
@@ -109,45 +143,37 @@ export default {
     calculateEarn(baseEarn, growthRate, currentOwned) {
       return baseEarn * Math.pow(growthRate, currentOwned);
     },
-    setProgressLevel(level, maxLevel) {
+    setProgressLevel() {
       const progressContainer = document.getElementById(`progress-container-${this.stone.id}`);
       const progressWave = progressContainer.querySelector('.progress-wave');
-      let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
-      if (level != 0 && level % maxLevel == 0) {
-        percentage = 0;
-      }
-
+      const percentage = this.calcLevelProgress.percentage;
+      const newTier = this.calcLevelProgress.tier;
       if (percentage >= 0) {
         progressWave.style.transform = `translateY(${percentage}%)`;
         if (percentage == 0) {
+          this.tier = newTier;
           setTimeout(function () {
+            console.log(newTier)
             progressWave.style.transform = `translateY(50%)`;
-            
             progressContainer.classList.add('upgraded');
+            
             progressContainer.addEventListener('animationend', function () {
               progressContainer.classList.remove("upgraded");
             });
           }, 200)
         }
       }
-    }
-  },
-  computed: {
-
-    currentPrice() {
-      if (this.stone.id == 0) {
-        return this.stone.price;
-      }
-      return this.calculatePrice(this.stone.price, 1.15, this.stone.level);
     },
-    currentEarn() {
-      if (this.stone.id == 0) {
-        return this.stone.earn;
-      }
-      return this.calculateEarn(this.stone.earn, 1.05, this.stone.level);
-    }
   },
-  emits: ['upgrade', 'reward']
+  watch: {
+    'stone.level': 'setProgressLevel'
+  },
+  mounted() {
+    this.setProgressLevel();
+  },
+  updated() {
+    //this.setProgressLevel();
+  }
 };
 </script>
 
@@ -256,7 +282,7 @@ export default {
   width: 100px;
   height: 100%;
   background-image: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%,
-      rgba(255, 255, 255, .8),
+      rgba(255, 255, 255, 0.8),
       rgba(255, 255, 255, 0) 70%);
   top: 0;
   left: -100px;
@@ -321,11 +347,12 @@ export default {
   bottom: 0;
   width: 200%;
   height: 200%;
-  background: linear-gradient(to bottom, rgba(0, 0, 255, 0) 50%, rgba(119, 212, 81, 0.8) 60%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%2377d451" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,218.7C384,235,480,245,576,229.3C672,213,768,171,864,138.7C960,107,1056,85,1152,85.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x;
+  background:  var(--background);
   background-size: 50% 100px;
   animation: wave 2s linear infinite;
   transition: transform 0.1s ease-in;
   transform: translateY(100%);
+  opacity: 0.5;
 }
 
 @keyframes wave {
