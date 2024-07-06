@@ -15,8 +15,13 @@ export default {
 </script>
 
 <style scoped>
+
 h1{
-  background: grey;
+  position: absolute;
+    bottom: 0;
+    background: grey;
     color: white;
+    width: 100%;
+    padding: 15px;
 }
 </style>

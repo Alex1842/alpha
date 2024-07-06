@@ -1,6 +1,5 @@
 <template>
       <div class="background">
-       <!--  <div class="water"></div> -->
     </div>
 
     <svg class="svgBg">

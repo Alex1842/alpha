@@ -1,26 +1,29 @@
 <template>
   <Background></Background>
+  <CoinsCounter :coins="coins"></CoinsCounter>
   <section>
-    <CoinsCounter :coins="coins"></CoinsCounter>
     <div class="d-flex">
       <div class="store">
-        <div class="store-item" v-for="(worker, i) in workersWithImages" :key="i">
-          <Worker v-if="worker.active" :worker="worker" :workerImg="workerImages[i]" :coins="coins" @upgrade="upgradeWorker"
-            @reward="rewardWorker">
-          </Worker>
+        <div class="store-item" v-for="(stone, i) in stonesWithImages" :key="i">
+          <StoneItem v-if="stone.active" :stone="stone" :stoneImg="stoneImages[i]" :coins="coins"
+            @upgrade="upgradeStone" @reward="getMoney">
+          </StoneItem>
         </div>
       </div>
-       <div class="button-container">
-        <div class="farmButton" @click="coins = coins + this.basicFarm"></div>
-      </div> 
+      <FarmStone @get="getStone"></FarmStone>
+      <div class="button-container">
+        <div class="farmButton" @click="saveGame"></div>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
+import { toRaw, reactive } from 'vue';
 import Background from './components/Background.vue';
-import Worker from './components/Worker.vue';
+import StoneItem from './components/StoneItem.vue';
 import CoinsCounter from './components/CoinsCounter.vue';
+import FarmStone from './components/FarmStone.vue';
 import content from './content/workers.json';
 
 export default {
@@ -28,55 +31,87 @@ export default {
   components: {
     Background,
     CoinsCounter,
-    Worker
+    FarmStone,
+    StoneItem
   },
   data() {
     return {
       coins: 0,
       basicFarm: 250,
       idCounter: 0,
-      workers: content.map((worker, index) => ({
-        ...worker,
+      stones: content.map((stone, index) => ({
+        ...stone,
         id: index,
         level: 0,
         amount: 0,
         active: index === 0
       })),
-      workerImages: []
+      stoneImages: []
     };
   },
   computed: {
-    workersWithImages() {
-      return this.workers.filter((_, i) => this.workerImages[i]);
+    stonesWithImages() {
+      return this.stones.filter((_, i) => this.stoneImages[i]);
     }
   },
   mounted() {
-    const imagePromises = this.workers.map(worker => {
-      return import(`@/assets/images/gems/${worker.icon}.png`)
+    this.loadGame();
+    const imagePromises = this.stones.map(stone => {
+      return import(`@/assets/images/gems/${stone.icon}.png`)
         .then(module => module.default)
         .catch(error => {
-          console.error(`Error loading image for worker ${worker.name}:`, error);
+          console.error(`Error loading image for stone ${stone.name}:`, error);
           return null;
         });
     });
 
     Promise.all(imagePromises).then(images => {
-      this.workerImages = images;
+      this.stoneImages = images;
     });
   },
   methods: {
-    upgradeWorker(workerId, paymentAmount) {
+    upgradeStone(stoneId, paymentAmount) {
       this.coins -= paymentAmount;
-      const worker = this.workers.find(w => w.id === workerId);
-      worker.level++;
+      const stone = this.stones.find(w => w.id === stoneId);
+      stone.level++;
     },
-    rewardWorker(workerId, earnAmount) {
+    getMoney(stoneId, earnAmount) {
       this.coins += earnAmount;
-      const worker = this.workers.find(w => w.id === workerId);
-      worker.amount++;
-      const nextInactiveWorker = this.workers.find(w => !w.active);
-      if (nextInactiveWorker && this.coins >= nextInactiveWorker.price) {
-        nextInactiveWorker.active = true;
+      const stone = this.stones.find(w => w.id === stoneId);
+      stone.amount--;
+      const nextInactiveStone = this.stones.find(w => !w.active);
+      if (nextInactiveStone && this.coins >= nextInactiveStone.price) {
+        nextInactiveStone.active = true;
+      }
+    },
+    getStone() {
+      
+      this.stones.find(w => w.id == 0).amount++;
+
+      this.coins = this.coins + this.basicFarm;
+      window.stones = this.stones
+      this.saveGame();
+    },
+    saveGame() {
+      const gameStatus = {
+        coins: this.coins,
+        stones: toRaw(this.stones)
+      };
+      const jsonString = JSON.stringify(gameStatus);
+      document.cookie = `alpha_gameStatus=${jsonString}`;
+      console.log('Game saved:', jsonString);
+    },
+    loadGame() {
+      const cookies = document.cookie.split('; ').find(row => row.startsWith('alpha_gameStatus='));
+      const jsonString = cookies ? cookies.split('=')[1] : null;
+      if (jsonString) {
+        const gameStatus = JSON.parse(jsonString);
+
+        this.coins = gameStatus.coins;
+        this.stones = reactive(gameStatus.stones);
+        console.log('Game loaded:', gameStatus);
+      } else {
+        console.error('No saved game found.');
       }
     }
   }
@@ -85,42 +120,31 @@ export default {
 
 <style>
 body {
-    -webkit-user-select: none;
-    -moz-user-select: none;    
-    -ms-user-select: none;     
-    user-select: none;         
-}
-@font-face {
-    font-family: 'HoneyCrepes';
-    src: url('/src/assets/fonts/Honey_Crepes.otf') format('opentype'),
-         url('/src/assets/fonts/Honey_Crepes.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-*{
-  font-family: 'HoneyCrepes', sans-serif !important;
-}
-.button-container {
-  position: absolute;
-  left: 50px;
-  top: 50px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.farmButton {
-  background-image: url("/src/assets/images/buttons/earn.png");
-  width: 70px;
-  aspect-ratio: 1;
-  background-size: contain;
-  background-repeat: no-repeat;
-  cursor: pointer;
+@font-face {
+  font-family: 'HoneyCrepes';
+  src: url('/src/assets/fonts/Honey_Crepes.otf') format('opentype'),
+    url('/src/assets/fonts/Honey_Crepes.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
+
+* {
+  font-family: 'HoneyCrepes', sans-serif !important;
+}
+
 
 .farmButton:hover {
   transform: scale(1.1);
 }
 </style>
 
-<style scoped>
+<style>
 * {
   position: relative;
 }
