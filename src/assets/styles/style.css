@@ -1,3 +1,9 @@
+html,
+body {
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
 #app {
     height: 100vh;
 }

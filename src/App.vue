@@ -2,18 +2,15 @@
   <Background></Background>
   <CoinsCounter :coins="coins"></CoinsCounter>
   <section>
-    <div class="d-flex">
-      <div class="store">
+    <div class="d-flex row">
+      <div class="store col-12">
         <div class="store-item" v-for="(stone, i) in stonesWithImages" :key="i">
           <StoneItem v-if="stone.active" :stone="stone" :stoneImg="stoneImages[i]" :coins="coins"
             @upgrade="upgradeStone" @reward="getMoney">
           </StoneItem>
         </div>
       </div>
-      <FarmStone @get="getStone"></FarmStone>
-      <div class="button-container">
-        <div class="farmButton" @click="saveGame"></div>
-      </div>
+      <FarmStone class="col-12" @get="getStone"></FarmStone>
     </div>
   </section>
 </template>
@@ -85,9 +82,7 @@ export default {
       }
     },
     getStone() {
-      
       this.stones.find(w => w.id == 0).amount++;
-
       this.coins = this.coins + this.basicFarm;
       window.stones = this.stones
       this.saveGame();
@@ -114,7 +109,10 @@ export default {
         console.error('No saved game found.');
       }
     }
-  }
+  },
+  /* watch: {
+    'coins': 'saveGame'
+  }, */
 }
 </script>
 
@@ -179,7 +177,7 @@ body {
 }
 
 .store {
-  margin-left: 20px;
+  margin: 0 10px;
 }
 </style>
 

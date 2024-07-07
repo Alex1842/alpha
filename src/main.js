@@ -6,3 +6,6 @@ import './assets/styles/fonts.css'
 import './assets/styles/style.css'
 
 createApp(App).mount('#app')
+document.addEventListener('dblclick', function(event) {
+    event.preventDefault();
+}, { passive: false });
