@@ -2,8 +2,7 @@
   <div :id="'progress-container-' + id" class="progress-container">
     <div class="progress-wave" :style="background"></div>
     <div class="item-level">
-      lvl.
-      <span>{{ level }}</span>
+      <span>{{ (chance*100).toFixed() }}%</span>
     </div>
   </div>
 </template>
@@ -17,6 +16,10 @@ export default {
       required: true
     },
     level: {
+      type: Number,
+      required: true
+    },
+    chance: {
       type: Number,
       required: true
     },
@@ -44,9 +47,7 @@ export default {
 }
 
 @media only screen and (max-width: 600px) {
-
   .item-level {
-
     span {
       font-size: 24px
     }
@@ -93,7 +94,7 @@ export default {
 
 .progress-wave {
   position: absolute;
-  bottom: 0;
+  bottom: -5px;
   width: 200%;
   height: 200%;
   background: var(--background);

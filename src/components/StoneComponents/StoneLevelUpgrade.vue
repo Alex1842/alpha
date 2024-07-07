@@ -1,9 +1,8 @@
 <template>
-  <div class="item-upgrade position-absolute" v-if="id > 0"
-    :disabled="coins < currentPrice"> 
-    ↑
+  <div class="item-upgrade position-absolute" :disabled="coins < currentPrice">
+    <!-- ↑ -->
     {{ currentPrice.toFixed(2) }}&nbsp;$
-    </div>
+  </div>
 </template>
 
 <script>
@@ -26,16 +25,15 @@ export default {
 }
 </script>
 <style>
-
 .item-upgrade {
   font-size: 20px;
   background: bisque;
   border-radius: 3px;
-  position: absolute;
+  padding: 0 5px;
   cursor: pointer;
-  right: -60px;
+  right: -30px;
   bottom: 0;
-  transform: rotate(343deg);
+  transform: rotate(307deg);
   z-index: 1;
 
 }

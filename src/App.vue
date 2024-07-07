@@ -4,10 +4,9 @@
   <section>
     <div class="d-flex row">
       <div class="store col-12">
-        <template v-for="(stone, i) in stonesWithImages"
-          :key="i">
-          <StoneItem v-if="stone.active" :stone="stone" :stoneImg="stoneImages[i]" :coins="coins"
-            @upgrade="upgradeStone" @reward="getMoney">
+        <template v-for="(stone, i) in stonesWithImages" :key="i">
+          <StoneItem v-if="stone.active" :ref="'stoneComponent-' + stone.id" :stone="stone" :stoneImg="stoneImages[i]"
+            :chance=absolutechanceList[stone.id] :coins="coins" @upgrade="upgradeStone" @reward="getMoney" @updateProbs="convertToConditionalProbabilities">
           </StoneItem>
         </template>
       </div>
@@ -44,15 +43,19 @@ export default {
         amount: 0,
         active: index === 0
       })),
+      chanceList: [],
+      absolutechanceList: [],
       stoneImages: []
     };
   },
   computed: {
     stonesWithImages() {
       return this.stones.filter((_, i) => this.stoneImages[i]);
-    }
+    },
   },
   mounted() {
+    this.generateChanceTable();
+    this.convertToConditionalProbabilities();
     this.loadGame();
     const imagePromises = this.stones.map(stone => {
       return import(`@/assets/images/gems/${stone.icon}.png`)
@@ -68,6 +71,28 @@ export default {
     });
   },
   methods: {
+    generateChanceTable() {
+      let chanceList = [];
+      const stonesWithRef = this.stones.filter(item => {
+        const stoneRef = this.$refs['stoneComponent-' + item.id];
+        return stoneRef && stoneRef.length > 0;
+      });
+      stonesWithRef.forEach(item => {
+        const stoneComponent = this.$refs['stoneComponent-' + item.id][0];
+        chanceList.push(stoneComponent.currentChance);
+      });
+      this.chanceList = chanceList;
+    },
+    convertToConditionalProbabilities() {
+      const conditionalChances = [];
+      let prevProbability = 1.0;
+      for (let i = this.chanceList.length - 1; i >= 0; i--) {
+        const currentProbability = this.chanceList[i] * prevProbability;
+        conditionalChances.push(currentProbability);
+        prevProbability *= (1 - this.chanceList[i]);
+      }
+      this.absolutechanceList = conditionalChances.reverse()
+    },
     upgradeStone(stoneId, paymentAmount) {
       this.coins -= paymentAmount;
       const stone = this.stones.find(w => w.id === stoneId);
@@ -83,9 +108,19 @@ export default {
       }
     },
     getStone() {
-      this.stones.find(w => w.id == 0).amount++;
       this.coins = this.coins + this.basicFarm;
-      window.stones = this.stones
+      const chances = this.chanceList;
+      this.convertToConditionalProbabilities();
+      console.log(this.absolutechanceList)
+      for (let i = chances.length - 1; i >= 0; i--) {
+        const seed = Math.random()
+        if (seed < chances[i]) {
+          this.stones.find(w => w.id == i).amount++;
+          this.saveGame();
+          return;
+        }
+      }
+      this.stones.find(w => w.id == 0).amount++;
       this.saveGame();
     },
     saveGame() {
@@ -95,7 +130,6 @@ export default {
       };
       const jsonString = JSON.stringify(gameStatus);
       document.cookie = `alpha_gameStatus=${jsonString}`;
-      //console.log('Game saved:', jsonString);
     },
     loadGame() {
       const cookies = document.cookie.split('; ').find(row => row.startsWith('alpha_gameStatus='));
@@ -111,9 +145,13 @@ export default {
       }
     }
   },
-  /* watch: {
-    'coins': 'saveGame'
-  }, */
+
+  watch: {
+    stones: {
+      handler: 'generateChanceTable',
+      deep: true
+    },
+  },
 }
 </script>
 
@@ -180,9 +218,14 @@ body {
 .store {
   margin: 0 10px;
 }
-</style>
 
-<style>
+@media only screen and (max-width: 600px) {
+  .store {
+    height: 350px;
+    overflow-y: scroll;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 12px;
 }

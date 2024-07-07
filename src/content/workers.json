@@ -1,11 +1,10 @@
 [{
         "name": "Quartz Stone",
         "icon": "G1",
-        "price": 0,
+        "price": 1,
         "earn": 1,
         "speed": 1,
-        "level": 0,
-        "levelCap": 20
+        "levelCap": 3
     },
     {
         "name": "Dawn Ruby",
@@ -13,7 +12,6 @@
         "price": 10,
         "earn": 5,
         "speed": 2,
-        "level": 0,
         "levelCap": 4
     },
     {
@@ -22,8 +20,7 @@
         "price": 50,
         "earn": 20,
         "speed": 4,
-        "level": 0,
-        "levelCap": 20
+        "levelCap": 5
     },
     {
         "name": "Smoldering Topaz",
@@ -31,7 +28,6 @@
         "price": 100,
         "earn": 50,
         "speed": 5,
-        "level": 0,
         "levelCap": 20
     },
     {
@@ -40,7 +36,6 @@
         "price": 500,
         "earn": 200,
         "speed": 1,
-        "level": 0,
         "levelCap": 20
     },
     {
@@ -49,7 +44,6 @@
         "price": 1000,
         "earn": 300,
         "speed": 0.5,
-        "level": 0,
         "levelCap": 20
     },
     {
@@ -58,7 +52,6 @@
         "price": 2000,
         "earn": 500,
         "speed": 0.25,
-        "level": 0,
         "levelCap": 20
     },
     {
@@ -67,7 +60,6 @@
         "price": 5000,
         "earn": 1000,
         "speed": 0.1,
-        "level": 0,
         "levelCap": 20
     },
     {
@@ -76,7 +68,6 @@
         "price": 10000,
         "earn": 2000,
         "speed": 0.05,
-        "level": 0,
         "levelCap": 20
     }
 ]

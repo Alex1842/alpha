@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="col-3">
-        <StoneLevel :id="stone.id" :level="stone.level" :background="levelWave" />
+        <StoneLevel :id="stone.id" :level="stone.level" :chance="chance" :background="levelWave" />
         <StoneLevelUpgrade :id="stone.id" :coins="coins" :currentPrice="currentPrice" @click="upgradeStone" />
       </div>
     </div>
@@ -45,6 +45,10 @@ export default {
     coins: {
       type: Number,
       required: true
+    },
+    chance: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -64,15 +68,18 @@ export default {
   },
   computed: {
     currentPrice() {
-      return this.stone.id === 0 ? this.stone.price : this.calculatePrice(this.stone.price, 1.15, this.stone.level);
+      return this.calculatePrice(this.stone.price, 1.15, this.stone.level);
     },
     currentEarn() {
-      return this.stone.id === 0 ? this.stone.earn : this.calculateEarn(this.stone.earn, 1.05, this.stone.level);
+      return this.calculateEarn(this.stone.earn, 1.05, this.stone.level);
     },
-    calcLevelProgress() {
+    currentChance() {
+      return this.currentTier.tier * .1;
+    },
+    currentTier() {
       const level = this.stone.level;
       const maxLevel = this.stone.levelCap;
-      const tier = Math.floor(level / maxLevel)
+      const tier = Math.floor(level / maxLevel);
       let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
       if (level !== 0 && level % maxLevel === 0) {
         percentage = 0;
@@ -80,7 +87,7 @@ export default {
       return { percentage, tier }
     },
     levelWave() {
-      const color = this.tierMap[this.tier] || 'black';
+      const color = this.tierMap[this.currentTier.tier] || 'black';
       const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="${color}" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,218.7C384,235,480,245,576,229.3C672,213,768,171,864,138.7C960,107,1056,85,1152,85.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>`;
       const encodedSVG = encodeURIComponent(svgData);
       const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
@@ -91,7 +98,6 @@ export default {
     upgradeStone() {
       if (this.coins >= this.currentPrice) {
         this.$emit('upgrade', this.stone.id, this.currentPrice);
-
         this.setProgressLevel();
       }
     },
@@ -128,17 +134,17 @@ export default {
     setProgressLevel() {
       const progressContainer = document.getElementById(`progress-container-${this.stone.id}`);
       const progressWave = progressContainer.querySelector('.progress-wave');
-      const percentage = this.calcLevelProgress.percentage;
-      const newTier = this.calcLevelProgress.tier;
+      const percentage = this.currentTier.percentage;
+      const newTier = this.currentTier.tier;
       if (percentage >= 0) {
         progressWave.style.transform = `translateY(${percentage}%)`;
         if (percentage == 0) {
           this.tier = newTier;
+          //this.$emit('updateProbs')
           setTimeout(function () {
-            console.log(newTier)
             progressWave.style.transform = `translateY(50%)`;
             progressContainer.classList.add('upgraded');
-
+            
             progressContainer.addEventListener('animationend', function () {
               progressContainer.classList.remove("upgraded");
             });
@@ -150,7 +156,7 @@ export default {
   mounted() {
     this.setProgressLevel();
   },
-  emits: ['reward', 'upgrade']
+  emits: ['reward', 'upgrade', 'updateProbs']
 };
 </script>
 <style>
