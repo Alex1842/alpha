@@ -4,11 +4,12 @@
   <section>
     <div class="d-flex row">
       <div class="store col-12">
-        <div class="store-item" v-for="(stone, i) in stonesWithImages" :key="i">
+        <template v-for="(stone, i) in stonesWithImages"
+          :key="i">
           <StoneItem v-if="stone.active" :stone="stone" :stoneImg="stoneImages[i]" :coins="coins"
             @upgrade="upgradeStone" @reward="getMoney">
           </StoneItem>
-        </div>
+        </template>
       </div>
       <FarmStone class="col-12" @get="getStone"></FarmStone>
     </div>

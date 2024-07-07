@@ -1,14 +1,14 @@
 <template>
-      <div class="button-container">
-        <div class="farmButton" @click="getStone"></div>
-      </div>
+  <div class="button-container d-flex justify-content-center align-items-center">
+    <div class="farmButton" @click="getStone"></div>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'FarmStone',
   props: {
-    
+
   },
   methods: {
     getStone() {
@@ -20,10 +20,8 @@ export default {
 </script>
 
 <style scoped>
-
 .button-container {
-  left: 50px;
-  top: 50px;
+  height: 20vh;
 }
 
 .farmButton {

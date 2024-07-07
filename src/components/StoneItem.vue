@@ -1,23 +1,21 @@
 <template>
-  <div class="d-flex justify-content-center">
-    <div class="d-flex flex-column item">
-      <div class="row flex-grow-1 align-items-center align-items-start-md">
-        <div class="col-3">
-          <StoneImage :img="stoneImg" :amount="stone.amount" @click="sellStone"
-            :disabled="isProgressing || stone.amount < 1" />
-        </div>
-        <div class="col-6 d-flex flex-row" style="padding:0;">
-          <div class="position-relative" style="width: 100%">
-            <div class="item-info flex-column">
-              <div class="item-name">{{ stone.name }}</div>
-              <StoneProgress :progress="progress" :currentEarn="currentEarn" />
-            </div>
+  <div class="d-flex flex-column item">
+    <div class="row flex-grow-1 align-items-center">
+      <div class="col-3">
+        <StoneImage :img="stoneImg" :amount="stone.amount" @click="sellStone"
+          :disabled="isProgressing || stone.amount < 1" />
+      </div>
+      <div class="col-6 d-flex flex-row" style="padding:0;">
+        <div class="position-relative" style="width: 100%">
+          <div class="item-info flex-column">
+            <div class="item-name">{{ stone.name }}</div>
+            <StoneProgress :progress="progress" :currentEarn="currentEarn" />
           </div>
         </div>
-        <div class="col-3">
-          <StoneLevel :id="stone.id" :level="stone.level" :background="levelWave" />
-          <StoneLevelUpgrade :id="stone.id" :coins="coins" :currentPrice="currentPrice" @click="upgradeStone" />
-        </div>
+      </div>
+      <div class="col-3">
+        <StoneLevel :id="stone.id" :level="stone.level" :background="levelWave" />
+        <StoneLevelUpgrade :id="stone.id" :coins="coins" :currentPrice="currentPrice" @click="upgradeStone" />
       </div>
     </div>
   </div>

@@ -16,12 +16,12 @@ export default {
 
 <style scoped>
 
-h1{
-  position: absolute;
+h1 {
+    position: fixed; 
     bottom: 0;
     background: grey;
     color: white;
     width: 100%;
     padding: 15px;
-}
+    margin: 0; }
 </style>
