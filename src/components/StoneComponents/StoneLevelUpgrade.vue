@@ -1,5 +1,9 @@
 <template>
-  <div class="item-upgrade position-absolute" :disabled="coins < currentPrice">
+  <div
+    class="item-upgrade position-absolute"
+    :disabled="coins < currentPrice"
+    @click="upgrade"
+  >
     <!-- ↑ -->
     {{ currentPrice.toFixed(2) }}&nbsp;$
   </div>
@@ -7,22 +11,32 @@
 
 <script>
 export default {
-  name: 'StoneLevelUpgrade',
+  name: "StoneLevelUpgrade",
   props: {
     id: {
       type: Number,
-      required: true
+      required: true,
     },
     coins: {
       type: Number,
-      required: true
+      required: true,
     },
     currentPrice: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
-}
+  methods: {
+    upgrade() {
+      console.log(this.$store)
+      this.$store.dispatch("upgradeStone", {
+        stoneId: this.id,
+        paymentAmount: this.currentPrice,
+      });
+      //this.$emit("click", { stoneId: this.id, paymentAmount: this.currentPrice });
+    },
+  },
+};
 </script>
 <style>
 .item-upgrade {
@@ -35,6 +49,5 @@ export default {
   bottom: 0;
   transform: rotate(307deg);
   z-index: 1;
-
 }
 </style>

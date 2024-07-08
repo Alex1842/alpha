@@ -1,35 +1,44 @@
 <template>
   <Background></Background>
-  <CoinsCounter :coins="coins"></CoinsCounter>
+  <CoinsCounter></CoinsCounter>
   <section>
     <div class="d-flex row">
       <div class="store col-12">
-        <template v-for="(stone, i) in stonesWithImages" :key="i">
-          <StoneItem v-if="stone.active" :ref="'stoneComponent-' + stone.id" :stone="stone" :stoneImg="stoneImages[i]"
-            :chance=absolutechanceList[stone.id] :coins="coins" @upgrade="upgradeStone" @reward="getMoney" @updateProbs="convertToConditionalProbabilities">
+        <template v-for="(stone, i) in $store.state.stones" :key="i">
+          <StoneItem
+           
+            :ref="'stoneComponent-' + stone.id"
+            :stone="stone"
+            :stoneImg="stoneImages[i]"
+            :chance="absolutechanceList[stone.id]"
+            :coins="coins"
+            @upgrade="handleUpgrade"
+            @reward="getMoney"
+            @updateProbs="convertToConditionalProbabilities"
+          >
           </StoneItem>
         </template>
       </div>
-      <FarmStone class="col-12" @get="getStone"></FarmStone>
+      <FarmStone class="col-12"></FarmStone>
     </div>
   </section>
 </template>
 
 <script>
-import { toRaw, reactive } from 'vue';
-import Background from './components/Background.vue';
-import StoneItem from './components/StoneItem.vue';
-import CoinsCounter from './components/CoinsCounter.vue';
-import FarmStone from './components/FarmStone.vue';
-import content from './content/workers.json';
+import { mapState, mapActions } from "vuex";
+import Background from "./components/Background.vue";
+import StoneItem from "./components/StoneItem.vue";
+import CoinsCounter from "./components/CoinsCounter.vue";
+import FarmStone from "./components/FarmStone.vue";
+import content from "./content/workers.json";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Background,
     CoinsCounter,
     FarmStone,
-    StoneItem
+    StoneItem,
   },
   data() {
     return {
@@ -41,118 +50,63 @@ export default {
         id: index,
         level: 0,
         amount: 0,
-        active: index === 0
+        active: index === 0,
       })),
       chanceList: [],
       absolutechanceList: [],
-      stoneImages: []
+      stoneImages: [],
     };
   },
   computed: {
+    ...mapState(["coins", "stones"]),
     stonesWithImages() {
       return this.stones.filter((_, i) => this.stoneImages[i]);
     },
   },
   mounted() {
-    this.generateChanceTable();
-    this.convertToConditionalProbabilities();
+    this.$store.dispatch("loadGame");
+    this.$store.dispatch("initializeStones");
     this.loadGame();
-    const imagePromises = this.stones.map(stone => {
+    const imagePromises = this.stones.map((stone) => {
       return import(`@/assets/images/gems/${stone.icon}.png`)
-        .then(module => module.default)
-        .catch(error => {
+        .then((module) => module.default)
+        .catch((error) => {
           console.error(`Error loading image for stone ${stone.name}:`, error);
           return null;
         });
     });
 
-    Promise.all(imagePromises).then(images => {
+    Promise.all(imagePromises).then((images) => {
       this.stoneImages = images;
+      this.$nextTick(() => {
+        this.$store.dispatch("initializeChanceList");
+        //this.generateChanceTable();
+        //this.convertToConditionalProbabilities();
+      });
     });
   },
   methods: {
-    generateChanceTable() {
-      let chanceList = [];
-      const stonesWithRef = this.stones.filter(item => {
-        const stoneRef = this.$refs['stoneComponent-' + item.id];
-        return stoneRef && stoneRef.length > 0;
-      });
-      stonesWithRef.forEach(item => {
-        const stoneComponent = this.$refs['stoneComponent-' + item.id][0];
-        chanceList.push(stoneComponent.currentChance);
-      });
-      this.chanceList = chanceList;
-    },
-    convertToConditionalProbabilities() {
-      const conditionalChances = [];
-      let prevProbability = 1.0;
-      for (let i = this.chanceList.length - 1; i >= 0; i--) {
-        const currentProbability = this.chanceList[i] * prevProbability;
-        conditionalChances.push(currentProbability);
-        prevProbability *= (1 - this.chanceList[i]);
-      }
-      this.absolutechanceList = conditionalChances.reverse()
-    },
-    upgradeStone(stoneId, paymentAmount) {
-      this.coins -= paymentAmount;
-      const stone = this.stones.find(w => w.id === stoneId);
-      stone.level++;
-    },
+    ...mapActions(["loadGame", "saveGame", "upgradeStone", "getMoney", "farmStone"]),
     getMoney(stoneId, earnAmount) {
       this.coins += earnAmount;
-      const stone = this.stones.find(w => w.id === stoneId);
+      const stone = this.stones.find((w) => w.id === stoneId);
       stone.amount--;
-      const nextInactiveStone = this.stones.find(w => !w.active);
+      const nextInactiveStone = this.stones.find((w) => !w.active);
       if (nextInactiveStone && this.coins >= nextInactiveStone.price) {
         nextInactiveStone.active = true;
       }
     },
-    getStone() {
-      this.coins = this.coins + this.basicFarm;
-      const chances = this.chanceList;
-      this.convertToConditionalProbabilities();
-      console.log(this.absolutechanceList)
-      for (let i = chances.length - 1; i >= 0; i--) {
-        const seed = Math.random()
-        if (seed < chances[i]) {
-          this.stones.find(w => w.id == i).amount++;
-          this.saveGame();
-          return;
-        }
-      }
-      this.stones.find(w => w.id == 0).amount++;
-      this.saveGame();
+    handleUpgrade({ stoneId, paymentAmount }) {
+      this.upgradeStone({ stoneId, paymentAmount });
     },
-    saveGame() {
-      const gameStatus = {
-        coins: this.coins,
-        stones: toRaw(this.stones)
-      };
-      const jsonString = JSON.stringify(gameStatus);
-      document.cookie = `alpha_gameStatus=${jsonString}`;
-    },
-    loadGame() {
-      const cookies = document.cookie.split('; ').find(row => row.startsWith('alpha_gameStatus='));
-      const jsonString = cookies ? cookies.split('=')[1] : null;
-      if (jsonString) {
-        const gameStatus = JSON.parse(jsonString);
-
-        this.coins = gameStatus.coins;
-        this.stones = reactive(gameStatus.stones);
-        console.log('Game loaded:', gameStatus);
-      } else {
-        console.error('No saved game found.');
-      }
-    }
   },
-
   watch: {
     stones: {
-      handler: 'generateChanceTable',
-      deep: true
+      handler: "generateChanceTable",
+      deep: true,
     },
   },
-}
+};
 </script>
 
 <style>
@@ -164,17 +118,16 @@ body {
 }
 
 @font-face {
-  font-family: 'HoneyCrepes';
-  src: url('/src/assets/fonts/Honey_Crepes.otf') format('opentype'),
-    url('/src/assets/fonts/Honey_Crepes.ttf') format('truetype');
+  font-family: "HoneyCrepes";
+  src: url("/src/assets/fonts/Honey_Crepes.otf") format("opentype"),
+    url("/src/assets/fonts/Honey_Crepes.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 * {
-  font-family: 'HoneyCrepes', sans-serif !important;
+  font-family: "HoneyCrepes", sans-serif !important;
 }
-
 
 .farmButton:hover {
   transform: scale(1.1);
@@ -186,7 +139,6 @@ body {
   position: relative;
 }
 </style>
-
 
 <style>
 #app {

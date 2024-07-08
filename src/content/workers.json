@@ -20,7 +20,7 @@
         "price": 50,
         "earn": 20,
         "speed": 4,
-        "levelCap": 5
+        "levelCap": 4
     },
     {
         "name": "Smoldering Topaz",
@@ -28,7 +28,7 @@
         "price": 100,
         "earn": 50,
         "speed": 5,
-        "levelCap": 20
+        "levelCap": 4
     },
     {
         "name": "Starlight Diamond",
@@ -36,7 +36,7 @@
         "price": 500,
         "earn": 200,
         "speed": 1,
-        "levelCap": 20
+        "levelCap": 4
     },
     {
         "name": "Vortex Garnet",

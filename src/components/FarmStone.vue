@@ -1,22 +1,20 @@
 <template>
   <div class="button-container d-flex justify-content-center align-items-center">
-    <div class="farmButton" @click="getStone"></div>
+    <div class="farmButton" @click="earnStone"></div>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
-  name: 'FarmStone',
-  props: {
-
-  },
+  name: "FarmStone",
   methods: {
-    getStone() {
-      this.$emit('get');
+    ...mapActions(["farmStone"]),
+    earnStone() {
+      this.farmStone();
     },
   },
-  emits: ['get']
-}
+};
 </script>
 
 <style scoped>
