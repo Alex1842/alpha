@@ -18,10 +18,6 @@ export default {
       type: Number,
       required: true,
     },
-    progress: {
-      type: Number,
-      required: true,
-    },
   },
   computed: {
     ...mapGetters(["getProgressById","getStoneValueById"]),

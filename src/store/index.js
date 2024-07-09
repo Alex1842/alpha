@@ -103,7 +103,6 @@ export default createStore({
                 chance: 0,
                 absoluteChance: 0
             }));
-            console.log(initializedStones)
             commit('setStones', initializedStones);
 
         },
@@ -156,7 +155,7 @@ export default createStore({
             const jsonString = JSON.stringify(gameStatus);
             document.cookie = `alpha_gameStatus=${jsonString}`;
         },
-        upgradeStone({ commit, state }, { stoneId, paymentAmount }) {
+        upgradeStone({ commit, dispatch, state }, { stoneId, paymentAmount }) {
             if (state.coins >= paymentAmount) {
                 commit('decrementCoins', paymentAmount);
                 commit('incrementStoneLevel', stoneId);
@@ -164,6 +163,7 @@ export default createStore({
                 commit('setChance', { stoneId });
                 commit('incrementUpgradePrice', { stoneId });
                 commit('incrementStoneValue', { stoneId });
+                dispatch('setProgressLevel', { stoneId });
             }
         },
         sellStone({ commit, state }, stoneId) {
@@ -209,18 +209,34 @@ export default createStore({
             dispatch('saveGame');
             console.log(state)
         },
-        /* setProgressLevel({ commit, getters }, stoneId) {
-            const stone = getters.stoneById(stoneId);
+        setProgressLevel({ state }, { stoneId }) {
+            const stone = state.stones.find(stone => stone.id === stoneId);
             if (!stone) return;
 
-            const percentage = getters.currentTier(stoneId).percentage;
-            const newTier = getters.currentTier(stoneId).tier;
+            const progressContainer = document.getElementById(`progress-container-${stoneId}`);
+            if (!progressContainer) return;
 
-            commit('setProgress', { stoneId, progress: percentage });
-            if (percentage === 0) {
-                commit('setTier', { stoneId, tier: newTier });
+            const progressWave = progressContainer.querySelector(".progress-wave");
+            if (!progressWave) return;
+
+            const level = stone.level;
+            const maxLevel = stone.levelCap;
+            let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
+            console.log("sun", stone, percentage)
+            if (percentage >= 0) {
+                progressWave.style.transform = `translateY(${percentage}%)`;
+                if (percentage === 0) {
+                    setTimeout(function() {
+                        progressWave.style.transform = `translateY(50%)`;
+                        progressContainer.classList.add("upgraded");
+                        progressContainer.addEventListener("animationend", function() {
+                            progressContainer.classList.remove("upgraded");
+                        });
+                    }, 1000);
+                }
             }
-        } */
+        },
+
     },
     getters: {
         coins: state => state.coins,
@@ -235,14 +251,16 @@ export default createStore({
             return stone ? stone.name : "Lorem";
         },
         getStoneValueById: (state) => (stoneId) => {
-            console.log(state)
             const stone = state.stones[stoneId];
             return stone ? stone.actualValue : 0;
         },
         getProgressById: (state) => (stoneId) => {
-            console.log(state)
             const stone = state.stones[stoneId];
             return stone ? stone.progress : 0;
+        },
+        getProgressingById: (state) => (stoneId) => {
+            const stone = state.stones[stoneId];
+            return stone ? stone.isProgressing : 0;
         },
         getTierById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
