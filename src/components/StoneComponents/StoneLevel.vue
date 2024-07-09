@@ -1,34 +1,32 @@
 <template>
-  <div :id="'progress-container-' + id" class="progress-container">
+  <div :id="'progress-container-' + stoneId" class="progress-container">
     <div class="progress-wave" :style="background"></div>
     <div class="item-level">
-      <span>{{ (chance*100).toFixed() }}%</span>
+      <span>{{ (chance(stoneId) * 100).toFixed() }}%</span>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: 'StoneLevel',
+  name: "StoneLevel",
   props: {
-    id: {
+    stoneId: {
       type: Number,
-      required: true
-    },
-    level: {
-      type: Number,
-      required: true
-    },
-    chance: {
-      type: Number,
-      required: true
+      required: true,
     },
     background: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-}
+  computed: {
+    ...mapGetters({
+      chance: "getChanceById",
+    }),
+  },
+};
 </script>
 <style>
 .item-level {
@@ -42,25 +40,28 @@ export default {
   transform: translate(-50%, -50%);
 
   span {
-    font-size: 36px
+    font-size: 36px;
   }
 }
 
 @media only screen and (max-width: 600px) {
   .item-level {
     span {
-      font-size: 24px
+      font-size: 24px;
     }
   }
 }
 .progress-container.upgraded:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100px;
   height: 100%;
-  background-image: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0) 70%);
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0) 70%
+  );
   top: 0;
   left: -100px;
   animation: shine 1s linear;
@@ -79,8 +80,6 @@ export default {
     left: 100%;
   }
 }
-
-
 
 .progress-container {
   width: 100%;

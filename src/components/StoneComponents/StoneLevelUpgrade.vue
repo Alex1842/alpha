@@ -1,40 +1,37 @@
 <template>
-  <div
-    class="item-upgrade position-absolute"
-    :disabled="coins < currentPrice"
-    @click="upgrade"
-  >
+  <div class="item-upgrade position-absolute" :disabled="cantPay" @click="upgrade">
     <!-- ↑ -->
-    {{ currentPrice.toFixed(2) }}&nbsp;$
+    {{ this.upgradePrice.toFixed(2) }}&nbsp;$
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "StoneLevelUpgrade",
   props: {
-    id: {
-      type: Number,
-      required: true,
-    },
-    coins: {
-      type: Number,
-      required: true,
-    },
-    currentPrice: {
+    stoneId: {
       type: Number,
       required: true,
     },
   },
-  methods: {
-    upgrade() {
-      console.log(this.$store)
-      this.$store.dispatch("upgradeStone", {
-        stoneId: this.id,
-        paymentAmount: this.currentPrice,
-      });
-      //this.$emit("click", { stoneId: this.id, paymentAmount: this.currentPrice });
+  computed: {
+    ...mapGetters(["coins", "getActualUpgradePriceById"]),
+    upgradePrice() {
+      return this.getActualUpgradePriceById(this.stoneId);
     },
+    cantPay() {
+      return this.coins < this.upgradePrice;
+    },
+  },
+  methods: {
+    ...mapActions(["upgradeStone"]),
+    upgrade() {
+      this.$store.dispatch("upgradeStone", {
+        stoneId: this.stoneId,
+        paymentAmount: this.upgradePrice,
+      });
+     },
   },
 };
 </script>

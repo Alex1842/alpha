@@ -4,17 +4,10 @@
   <section>
     <div class="d-flex row">
       <div class="store col-12">
-        <template v-for="(stone, i) in $store.state.stones" :key="i">
+        <template v-for="(stone, i) in stones" :key="i">
           <StoneItem
-           
-            :ref="'stoneComponent-' + stone.id"
-            :stone="stone"
+            :stoneId="stone.id"
             :stoneImg="stoneImages[i]"
-            :chance="absolutechanceList[stone.id]"
-            :coins="coins"
-            @upgrade="handleUpgrade"
-            @reward="getMoney"
-            @updateProbs="convertToConditionalProbabilities"
           >
           </StoneItem>
         </template>
@@ -45,7 +38,7 @@ export default {
       coins: 0,
       basicFarm: 250,
       idCounter: 0,
-      stones: content.map((stone, index) => ({
+      stones2: content.map((stone, index) => ({
         ...stone,
         id: index,
         level: 0,
@@ -64,9 +57,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("loadGame");
-    this.$store.dispatch("initializeStones");
-    this.loadGame();
+    console.log(this.stones)
+    this.initializeStones();
     const imagePromises = this.stones.map((stone) => {
       return import(`@/assets/images/gems/${stone.icon}.png`)
         .then((module) => module.default)
@@ -79,26 +71,21 @@ export default {
     Promise.all(imagePromises).then((images) => {
       this.stoneImages = images;
       this.$nextTick(() => {
-        this.$store.dispatch("initializeChanceList");
-        //this.generateChanceTable();
-        //this.convertToConditionalProbabilities();
+        this.initializeStones();
+        this.loadGame();
       });
     });
   },
   methods: {
-    ...mapActions(["loadGame", "saveGame", "upgradeStone", "getMoney", "farmStone"]),
-    getMoney(stoneId, earnAmount) {
-      this.coins += earnAmount;
-      const stone = this.stones.find((w) => w.id === stoneId);
-      stone.amount--;
-      const nextInactiveStone = this.stones.find((w) => !w.active);
-      if (nextInactiveStone && this.coins >= nextInactiveStone.price) {
-        nextInactiveStone.active = true;
-      }
-    },
-    handleUpgrade({ stoneId, paymentAmount }) {
-      this.upgradeStone({ stoneId, paymentAmount });
-    },
+    ...mapActions([
+      "loadGame",
+      "saveGame",
+      "initializeStones",
+      "upgradeStone",
+      "getMoney",
+      "farmStone",
+      "stones",
+    ]),
   },
   watch: {
     stones: {
