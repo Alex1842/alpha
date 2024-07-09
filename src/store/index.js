@@ -106,32 +106,7 @@ export default createStore({
             commit('setStones', initializedStones);
 
         },
-        /* initializeChanceList({ commit, state, dispatch }) {
-            let chanceList = [];
 
-            const stonesWithRef = state.stones.filter((item) => {
-                const stoneRef = this.$refs["stoneComponent-" + item.id];
-                return stoneRef && stoneRef.length > 0;
-            });
-            stonesWithRef.forEach((item) => {
-                const stoneComponent = this.$refs["stoneComponent-" + item.id][0];
-                chanceList.push(stoneComponent.currentChance);
-            });
-            commit('setChanceList', chanceList);
-            dispatch('initializeAbsoluteChanceList');
-            console.log(state)
-        }, */
-        /* initializeAbsoluteChanceList({ commit, state }) {
-            const conditionalChances = [];
-            let prevProbability = 1.0;
-            for (let i = state.chanceList.length - 1; i >= 0; i--) {
-                const currentProbability = state.chanceList[i] * prevProbability;
-                conditionalChances.push(currentProbability);
-                prevProbability *= 1 - state.chanceList[i];
-            }
-            const absolutechanceList = conditionalChances.reverse();
-            commit('setAbsoluteChanceList', absolutechanceList);
-        }, */
         loadGame({ commit }) {
             const cookies = document.cookie.split('; ').find(row => row.startsWith('alpha_gameStatus='));
             const jsonString = cookies ? cookies.split('=')[1] : null;
@@ -221,8 +196,8 @@ export default createStore({
 
             const level = stone.level;
             const maxLevel = stone.levelCap;
-            let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
-            console.log("sun", stone, percentage)
+            let percentage = level % maxLevel == 0 ? 0 : 50 - ((level % maxLevel / maxLevel) * 50);
+
             if (percentage >= 0) {
                 progressWave.style.transform = `translateY(${percentage}%)`;
                 if (percentage === 0) {
@@ -232,7 +207,7 @@ export default createStore({
                         progressContainer.addEventListener("animationend", function() {
                             progressContainer.classList.remove("upgraded");
                         });
-                    }, 1000);
+                    }, 200);
                 }
             }
         },

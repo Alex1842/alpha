@@ -50,64 +50,20 @@ export default {
       intervalId: null,
     };
   },
-  mounted() {
-    //this.setProgressLevel();
-  },
   computed: {
-    ...mapGetters([
-      "stoneById",
-      "tierMap",
-      "currentTier",
-      "getStoneNameById"
-    ]),
-    /* currentTier() {
-      const level = this.stone.level;
-      const maxLevel = this.stone.levelCap;
-      const tier = Math.floor(level / maxLevel);
-      let percentage = 50 - ((level % maxLevel) / maxLevel) * 50;
-      if (level !== 0 && level % maxLevel === 0) {
-        percentage = 0;
-      }
-      return { percentage, tier };
-    }, */
+    ...mapGetters(["tierMap", "getTierById", "getStoneNameById"]),
+
     levelWave() {
-      const currentTier = this.currentTier(this.stoneId);
-      if (!currentTier) return { "--background": "black" };
-      const color = this.tierMap[currentTier.tier] || "black";
+      const currentTier = this.getTierById(this.stoneId);
+      const color = this.tierMap[currentTier] || "black";
       const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="${color}" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,218.7C384,235,480,245,576,229.3C672,213,768,171,864,138.7C960,107,1056,85,1152,85.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>`;
       const encodedSVG = encodeURIComponent(svgData);
       const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
-
       return { "--background": background };
     },
   },
   methods: {
     ...mapActions(["sellStone", "setProgressLevel"]),
-    /*
-    setProgressLevel() {
-      //this.setProgressLevel({ stoneId: this.stoneId });
-      const progressContainer = document.getElementById(
-        `progress-container-${this.stoneId}`
-      );
-      const progressWave = progressContainer.querySelector(".progress-wave");
-      const currentTier = this.currentTier(this.stoneId);
-      const percentage = currentTier.percentage;
-      const newTier = currentTier.tier;
-      this.$emit("updateProbs");
-      if (percentage >= 0) {
-        progressWave.style.transform = `translateY(${percentage}%)`;
-        if (percentage === 0) {
-          this.tier = newTier;
-          setTimeout(function () {
-            progressWave.style.transform = `translateY(50%)`;
-            progressContainer.classList.add("upgraded");
-            progressContainer.addEventListener("animationend", function () {
-              progressContainer.classList.remove("upgraded");
-            });
-          }, 200);
-        }
-      }
-    }, */
   },
 };
 </script>

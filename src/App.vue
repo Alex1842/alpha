@@ -5,11 +5,7 @@
     <div class="d-flex row">
       <div class="store col-12">
         <template v-for="(stone, i) in stones" :key="i">
-          <StoneItem
-            :stoneId="stone.id"
-            :stoneImg="stoneImages[i]"
-          >
-          </StoneItem>
+          <StoneItem :stoneId="stone.id" :stoneImg="stoneImages[i]"> </StoneItem>
         </template>
       </div>
       <FarmStone class="col-12"></FarmStone>
@@ -55,26 +51,20 @@ export default {
 
     Promise.all(imagePromises).then((images) => {
       this.stoneImages = images;
-      this.$nextTick(() => {
-        this.initializeStones();
-        this.loadGame();
-      });
     });
+    this.initializeStones();
+    this.loadGame();
   },
   methods: {
-    ...mapActions([
-      "loadGame",
-      "initializeStones",
-    ]),
+    ...mapActions(["loadGame", "initializeStones"]),
   },
 };
 </script>
 
 <style>
-
 .farmButton:hover {
-    transform: scale(1.1);
-  }
+  transform: scale(1.1);
+}
 .store {
   margin: 0 10px;
 }
@@ -85,5 +75,4 @@ export default {
     overflow-y: scroll;
   }
 }
-
 </style>

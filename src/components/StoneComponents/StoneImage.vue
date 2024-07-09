@@ -38,6 +38,17 @@ export default {
 };
 </script>
 <style>
+div[disabled="false"] .floating-element {
+  border-radius: 10px;
+  animation: float 2s ease-in-out infinite;
+  border-radius: 10px;
+  animation: float 2s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: scale(1.05);
+  }
+}
 .item-icon[disabled="false"] {
   cursor: pointer;
 }
