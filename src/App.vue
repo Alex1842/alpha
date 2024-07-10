@@ -7,6 +7,7 @@
         <template v-for="(stone, i) in stones" :key="i">
           <StoneItem :stoneId="stone.id" :stoneImg="stoneImages[i]"> </StoneItem>
         </template>
+        <button @click="changeChanceType">Change percent type</button>
       </div>
       <FarmStone class="col-12"></FarmStone>
     </div>
@@ -56,7 +57,7 @@ export default {
     this.loadGame();
   },
   methods: {
-    ...mapActions(["loadGame", "initializeStones"]),
+    ...mapActions(["loadGame", "initializeStones","changeChanceType"]),
   },
 };
 </script>

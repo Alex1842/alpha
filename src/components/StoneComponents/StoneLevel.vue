@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "StoneLevel",
   props: {
@@ -21,9 +21,23 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isProgressSet: false,
+    };
+  },
   computed: {
-    ...mapGetters(["getChanceById","getTierById"]),
-    
+    ...mapGetters(["getChanceById", "getTierById"]),
+  },
+
+  methods: {
+    ...mapActions(["setProgressLevel"]),
+  },
+  updated() {
+    if (!this.isProgressSet) {
+      this.setProgressLevel({ stoneId: this.stoneId });
+      this.isProgressSet = true;
+    }
   },
 };
 </script>
@@ -92,14 +106,13 @@ export default {
 
 .progress-wave {
   position: absolute;
-  bottom: -5px;
+  bottom: -50px;
   width: 200%;
   height: 200%;
   background: var(--background);
   background-size: 50% 100px;
   animation: wave 2s linear infinite;
   transition: transform 0.1s ease-in;
-  transform: translateY(100%);
   opacity: 0.5;
 }
 

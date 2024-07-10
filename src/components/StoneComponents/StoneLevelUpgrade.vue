@@ -27,11 +27,11 @@ export default {
   methods: {
     ...mapActions(["upgradeStone"]),
     upgrade() {
-      this.$store.dispatch("upgradeStone", {
+      this.upgradeStone({
         stoneId: this.stoneId,
         paymentAmount: this.upgradePrice,
       });
-     },
+    },
   },
 };
 </script>

@@ -1,21 +1,17 @@
 import { createStore } from 'vuex';
 import { toRaw } from 'vue';
-import stoneList from "../content/workers.json";
+import baseData from "../content/workers.json";
 
 const MAX_LEVEL_CAP = 20;
+const UPGRADE_WAVE_SHIFT = -48;
 
 export default createStore({
     state: {
         coins: 0,
         basicFarm: 250,
-        stones: stoneList,
-        tierMap: {
-            0: "red",
-            1: "green",
-            2: "blue",
-            3: "yellow",
-            4: "pink",
-        },
+        chanceType: 0,
+        stones: baseData.stones,
+        tierMap: baseData.tierMap,
     },
     mutations: {
         setCoins(state, amount) {
@@ -45,6 +41,24 @@ export default createStore({
                 const tier = stone.tier
                 stone.chance = tier / MAX_LEVEL_CAP;
             }
+        },
+        setAbsoluteChance(state) {
+            state.stones.slice().reverse().forEach((stone, index, array) => {
+                if (index === 0) {
+                    stone.absoluteChance = stone.chance
+                } else {
+                    let product = array.slice().reverse().slice(0, index).reduce((acc, val) => acc * (1 - val.chance), 1);
+                    console.log("product", product)
+                    stone.absoluteChance = stone.chance * product;
+                }
+                console.log("chance", stone.chance, "absChance", stone.absoluteChance)
+            });
+
+        },
+        setChanceType(state) {
+            const chanceType = state.chanceType;
+            state.chanceType = (chanceType + 1) % 2
+
         },
         setIntervalId(state, { stoneId, intervalId }) {
             const stone = state.stones[stoneId];
@@ -113,10 +127,11 @@ export default createStore({
 
             if (jsonString) {
                 const gameStatus = JSON.parse(jsonString);
-                //console.log(gameStatus)
                 commit('setCoins', gameStatus.coins);
                 commit('setStones', gameStatus.stones);
-                //console.log(gameStatus.stones)
+                /* state.stones.forEach((stone) => {
+                    dispatch('setProgressLevel', stone.id);
+                }); */
             } else {
                 console.error('No saved game found.');
             }
@@ -136,9 +151,10 @@ export default createStore({
                 commit('incrementStoneLevel', stoneId);
                 commit('setTier', { stoneId });
                 commit('setChance', { stoneId });
+                commit('setAbsoluteChance', { stoneId });
                 commit('incrementUpgradePrice', { stoneId });
                 commit('incrementStoneValue', { stoneId });
-                dispatch('setProgressLevel', { stoneId });
+                dispatch('setProgressLevel', { stoneId, upgraded: true });
             }
         },
         sellStone({ commit, state }, stoneId) {
@@ -184,7 +200,8 @@ export default createStore({
             dispatch('saveGame');
             console.log(state)
         },
-        setProgressLevel({ state }, { stoneId }) {
+        setProgressLevel({ state }, { stoneId, upgraded = false }) {
+            console.log(upgraded)
             const stone = state.stones.find(stone => stone.id === stoneId);
             if (!stone) return;
 
@@ -196,20 +213,23 @@ export default createStore({
 
             const level = stone.level;
             const maxLevel = stone.levelCap;
-            let percentage = level % maxLevel == 0 ? 0 : 50 - ((level % maxLevel / maxLevel) * 50);
+            let percentage = level % maxLevel == 0 && upgraded ? UPGRADE_WAVE_SHIFT : level % maxLevel / maxLevel * UPGRADE_WAVE_SHIFT
 
-            if (percentage >= 0) {
-                progressWave.style.transform = `translateY(${percentage}%)`;
-                if (percentage === 0) {
-                    setTimeout(function() {
-                        progressWave.style.transform = `translateY(50%)`;
-                        progressContainer.classList.add("upgraded");
-                        progressContainer.addEventListener("animationend", function() {
-                            progressContainer.classList.remove("upgraded");
-                        });
-                    }, 200);
-                }
+            progressWave.style.transform = `translateY(${percentage}%)`;
+
+            if (percentage === UPGRADE_WAVE_SHIFT) {
+                setTimeout(function() {
+                    progressWave.style.transform = `translateY(0)`;
+                    progressContainer.classList.add("upgraded");
+                    progressContainer.addEventListener("animationend", function() {
+                        progressContainer.classList.remove("upgraded");
+                    });
+                }, 200);
             }
+        },
+
+        changeChanceType({ commit }) {
+            commit('setChanceType');
         },
 
     },
@@ -218,7 +238,6 @@ export default createStore({
         stones: state => state.stones,
         getStoneAmountById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
-            //console.log(stone)
             return stone ? stone.amount : 0;
         },
         getStoneNameById: (state) => (stoneId) => {
@@ -243,7 +262,15 @@ export default createStore({
         },
         getChanceById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
-            return stone ? stone.chance : 0;
+            const chanceType = state.chanceType;
+            switch (chanceType) {
+                case 0:
+                    return stone ? stone.chance : 0;
+                case 1:
+                    return stone ? stone.absoluteChance : 0;
+                default:
+                    break;
+            }
         },
         getActualUpgradePriceById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
@@ -251,18 +278,6 @@ export default createStore({
         },
         stoneById: (state) => (id) => {
             return state.stones.find(stone => stone.id === id);
-        },
-        currentTier: (state, getters) => (id) => {
-            const stone = getters.stoneById(id);
-            if (!stone) return { percentage: 0, tier: 0 };
-            const level = stone.level;
-            const maxLevel = stone.levelCap;
-            const tier = Math.floor(level / maxLevel);
-            let percentage = 50 - ((level % maxLevel) / maxLevel) * 50;
-            if (level !== 0 && level % maxLevel === 0) {
-                percentage = 0;
-            }
-            return { percentage, tier };
         },
         tierMap: (state) => state.tierMap,
     },

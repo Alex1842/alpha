@@ -1,73 +1,88 @@
-[{
-        "name": "Quartz Stone",
-        "icon": "G1",
-        "upgradePrice": 1,
-        "value": 1,
-        "speed": 1,
-        "levelCap": 3
-    },
-    {
-        "name": "Dawn Ruby",
-        "icon": "G2",
-        "upgradePrice": 10,
-        "value": 5,
-        "speed": 2,
-        "levelCap": 4
-    },
-    {
-        "name": "Moon Crater Opal",
-        "icon": "G3",
-        "upgradePrice": 50,
-        "value": 20,
-        "speed": 4,
-        "levelCap": 4
-    },
-    {
-        "name": "Smoldering Topaz",
-        "icon": "G4",
-        "upgradePrice": 100,
-        "value": 50,
-        "speed": 5,
-        "levelCap": 4
-    },
-    {
-        "name": "Starlight Diamond",
-        "icon": "G5",
-        "upgradePrice": 500,
-        "value": 200,
-        "speed": 1,
-        "levelCap": 4
-    },
-    {
-        "name": "Vortex Garnet",
-        "icon": "G6",
-        "upgradePrice": 1000,
-        "value": 300,
-        "speed": 0.5,
-        "levelCap": 20
-    },
-    {
-        "name": "Cosmic Sapphire",
-        "icon": "G7",
-        "upgradePrice": 2000,
-        "value": 500,
-        "speed": 0.25,
-        "levelCap": 20
-    },
-    {
-        "name": "Mystic Agate",
-        "icon": "G8",
-        "upgradePrice": 5000,
-        "value": 1000,
-        "speed": 0.1,
-        "levelCap": 20
-    },
-    {
-        "name": "Galaxy Amethyst",
-        "icon": "G9",
-        "upgradePrice": 10000,
-        "value": 2000,
-        "speed": 0.05,
-        "levelCap": 20
+{
+    "stones": [{
+            "name": "Quartz Stone",
+            "icon": "G1",
+            "upgradePrice": 1,
+            "value": 1,
+            "speed": 1,
+            "levelCap": 3
+        },
+        {
+            "name": "Dawn Ruby",
+            "icon": "G2",
+            "upgradePrice": 10,
+            "value": 5,
+            "speed": 2,
+            "levelCap": 4
+        },
+        {
+            "name": "Moon Crater Opal",
+            "icon": "G3",
+            "upgradePrice": 50,
+            "value": 20,
+            "speed": 4,
+            "levelCap": 4
+        },
+        {
+            "name": "Smoldering Topaz",
+            "icon": "G4",
+            "upgradePrice": 100,
+            "value": 50,
+            "speed": 5,
+            "levelCap": 4
+        },
+        {
+            "name": "Starlight Diamond",
+            "icon": "G5",
+            "upgradePrice": 500,
+            "value": 200,
+            "speed": 1,
+            "levelCap": 4
+        },
+        {
+            "name": "Vortex Garnet",
+            "icon": "G6",
+            "upgradePrice": 1000,
+            "value": 300,
+            "speed": 0.5,
+            "levelCap": 20
+        },
+        {
+            "name": "Cosmic Sapphire",
+            "icon": "G7",
+            "upgradePrice": 2000,
+            "value": 500,
+            "speed": 0.25,
+            "levelCap": 20
+        },
+        {
+            "name": "Mystic Agate",
+            "icon": "G8",
+            "upgradePrice": 5000,
+            "value": 1000,
+            "speed": 0.1,
+            "levelCap": 20
+        },
+        {
+            "name": "Galaxy Amethyst",
+            "icon": "G9",
+            "upgradePrice": 10000,
+            "value": 2000,
+            "speed": 0.05,
+            "levelCap": 20
+        }
+    ],
+    "tierMap": {
+        "0": "#008000",
+        "1": "#007d00",
+        "2": "#4d7300",
+        "3": "#6d5700",
+        "4": "#8c3d00",
+        "5": "#b41800",
+        "6": "#cf0000",
+        "7": "#ae0046",
+        "8": "#8f006f",
+        "9": "#ad00ab",
+        "10": "#de00ef"
     }
-]
+}

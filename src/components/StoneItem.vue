@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import {  mapGetters } from "vuex";
 import StoneImage from "./StoneComponents/StoneImage.vue";
 import StoneLevel from "./StoneComponents/StoneLevel.vue";
 import StoneLevelUpgrade from "./StoneComponents/StoneLevelUpgrade.vue";
@@ -61,9 +61,6 @@ export default {
       const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
       return { "--background": background };
     },
-  },
-  methods: {
-    ...mapActions(["sellStone", "setProgressLevel"]),
   },
 };
 </script>
