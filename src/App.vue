@@ -4,8 +4,8 @@
   <section>
     <div class="d-flex row">
       <div class="store col-12">
-        <template v-for="(stone, i) in stones" :key="i">
-          <StoneItem :stoneId="stone.id" :stoneImg="stoneImages[i]"> </StoneItem>
+        <template v-for="(stone, i) in stones" :key="stone.id">
+          <StoneItem v-if="isActive(stone.id)" :stoneId="stone.id" :stoneImg="stoneImages[i]"> </StoneItem>
         </template>
         <button @click="changeChanceType">Change percent type</button>
       </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import Background from "./components/Background.vue";
 import StoneItem from "./components/StoneItem.vue";
 import CoinsCounter from "./components/CoinsCounter.vue";
@@ -36,6 +36,7 @@ export default {
   },
   computed: {
     ...mapState(["stones"]),
+    ...mapGetters(["getStoneActiveById"]),
     stonesWithImages() {
       return this.stones.filter((_, i) => this.stoneImages[i]);
     },
@@ -58,6 +59,11 @@ export default {
   },
   methods: {
     ...mapActions(["loadGame", "initializeStones","changeChanceType"]),
+    
+    isActive(stoneId){
+      console.log(stoneId)
+      return this.getStoneActiveById(stoneId);
+    }
   },
 };
 </script>

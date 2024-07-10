@@ -47,7 +47,7 @@ export default createStore({
                 if (index === 0) {
                     stone.absoluteChance = stone.chance
                 } else {
-                    let product = array.slice().reverse().slice(0, index).reduce((acc, val) => acc * (1 - val.chance), 1);
+                    let product = array.slice().reverse().slice(0, index).reduce((acc, val) => acc.chance * (1 - val.chance), 1);
                     console.log("product", product)
                     stone.absoluteChance = stone.chance * product;
                 }
@@ -107,7 +107,7 @@ export default createStore({
                 id: index,
                 level: 0,
                 amount: 0,
-                active: index > -1,
+                active: index == 0,
                 progress: 0,
                 isProgressing: false,
                 intervalId: null,
@@ -247,6 +247,10 @@ export default createStore({
         getStoneValueById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
             return stone ? stone.actualValue : 0;
+        },
+        getStoneActiveById: (state) => (stoneId) => {
+            const stone = state.stones[stoneId];
+            return stone ? stone.active : false;
         },
         getProgressById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
