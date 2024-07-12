@@ -1,7 +1,12 @@
 <template>
-  <div class="item-upgrade position-absolute" :disabled="cantPay" @click="upgrade">
+  <div
+    class="item-upgrade position-absolute"
+    :disabled="cantPay"
+    :hidden="!isUpgradeAvailable(this.stoneId)"
+    @click="upgrade"
+  >
     <!-- ↑ -->
-    {{ this.upgradePrice.toFixed(2) }}&nbsp;$
+    {{ this.upgradePrice }}&nbsp;$
   </div>
 </template>
 
@@ -16,9 +21,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["coins", "getActualUpgradePriceById"]),
+    ...mapGetters(["coins", "getActualUpgradePriceById", "isUpgradeAvailable"]),
     upgradePrice() {
-      return this.getActualUpgradePriceById(this.stoneId);
+      if (this.isUpgradeAvailable(this.stoneId)) {
+        return this.getActualUpgradePriceById(this.stoneId).toFixed(2);
+      } else {
+        return "MAX";
+      }
     },
     cantPay() {
       return this.coins < this.upgradePrice;

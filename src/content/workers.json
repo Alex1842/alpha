@@ -5,7 +5,7 @@
             "upgradePrice": 1,
             "value": 1,
             "speed": 1,
-            "levelCap": 3
+            "levelCap": 2
         },
         {
             "name": "Dawn Ruby",
@@ -13,7 +13,7 @@
             "upgradePrice": 10,
             "value": 5,
             "speed": 2,
-            "levelCap": 4
+            "levelCap": 2
         },
         {
             "name": "Moon Crater Opal",
@@ -21,7 +21,7 @@
             "upgradePrice": 50,
             "value": 20,
             "speed": 4,
-            "levelCap": 4
+            "levelCap": 2
         },
         {
             "name": "Smoldering Topaz",
@@ -29,7 +29,7 @@
             "upgradePrice": 100,
             "value": 50,
             "speed": 5,
-            "levelCap": 4
+            "levelCap": 2
         },
         {
             "name": "Starlight Diamond",
@@ -37,7 +37,7 @@
             "upgradePrice": 500,
             "value": 200,
             "speed": 1,
-            "levelCap": 4
+            "levelCap": 2
         },
         {
             "name": "Vortex Garnet",

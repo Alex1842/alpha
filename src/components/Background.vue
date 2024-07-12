@@ -33,8 +33,9 @@ body {
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-image: url("/src/assets/images/background/bg.png");
+    background-image: url("/src/assets/images/background/bg_v1.png");
     background-size: cover;
+    background-position: center;
 }
 
 .background .water {

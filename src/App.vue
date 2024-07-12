@@ -5,13 +5,18 @@
     <div class="d-flex row">
       <div class="store col-12">
         <template v-for="(stone, i) in stones" :key="stone.id">
-          <StoneItem v-if="isActive(stone.id)" :stoneId="stone.id" :stoneImg="stoneImages[i]"> </StoneItem>
+          <StoneItem
+            v-if="isActive(stone.id)"
+            :stoneId="stone.id"
+            :stoneImg="stoneImages[i]"
+          >
+          </StoneItem>
         </template>
         <button @click="changeChanceType">Change percent type</button>
       </div>
-      <FarmStone class="col-12"></FarmStone>
     </div>
   </section>
+  <FarmStone class="col-12"></FarmStone>
 </template>
 
 <script>
@@ -58,12 +63,11 @@ export default {
     this.loadGame();
   },
   methods: {
-    ...mapActions(["loadGame", "initializeStones","changeChanceType"]),
-    
-    isActive(stoneId){
-      console.log(stoneId)
+    ...mapActions(["loadGame", "initializeStones", "changeChanceType"]),
+
+    isActive(stoneId) {
       return this.getStoneActiveById(stoneId);
-    }
+    },
   },
 };
 </script>
@@ -76,6 +80,18 @@ export default {
   margin: 0 10px;
 }
 
+@media only screen and (max-width: 850px) {
+  .store {
+    height: 550px;
+    overflow-y: scroll;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .store {
+    height: 450px;
+    overflow-y: scroll;
+  }
+}
 @media only screen and (max-width: 600px) {
   .store {
     height: 350px;

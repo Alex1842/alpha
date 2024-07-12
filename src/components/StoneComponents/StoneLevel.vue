@@ -2,7 +2,9 @@
   <div :id="'progress-container-' + stoneId" class="progress-container">
     <div class="progress-wave" :style="background"></div>
     <div class="item-level">
-      <span>{{ (getChanceById(stoneId) * 100).toFixed() }}%</span>
+      <span :style="!isUpgradeAvailable(stoneId) ? { color: 'white' } : {}">{{
+        calculatedChance
+      }}</span>
     </div>
   </div>
 </template>
@@ -27,13 +29,20 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getChanceById", "getTierById"]),
+    ...mapGetters(["getChanceById", "isUpgradeAvailable"]),
+    calculatedChance() {
+      if (this.isUpgradeAvailable(this.stoneId)) {
+        return (this.getChanceById(this.stoneId) * 100).toFixed() + "%";
+      } else {
+        return "MAX";
+      }
+    },
   },
 
   methods: {
     ...mapActions(["setProgressLevel"]),
   },
-  updated() {
+  mounted() {
     if (!this.isProgressSet) {
       this.setProgressLevel({ stoneId: this.stoneId });
       this.isProgressSet = true;

@@ -1,30 +1,37 @@
 <template>
-  <div class="button-container d-flex justify-content-center align-items-center">
+  <div id="farmButton_container" class="button-container d-flex justify-content-center align-items-center">
     <div class="farmButton" @click="earnStone"></div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "FarmStone",
   methods: {
     ...mapActions(["farmStone"]),
     earnStone() {
-      this.farmStone();
+      const sun = this.getRandomStone;
+      this.farmStone(sun);
     },
   },
+  computed: {
+    ...mapGetters(["getRandomStone"])
+  }
 };
 </script>
 
 <style scoped>
-.button-container {
-  height: 20vh;
+#farmButton_container {
+  position: absolute;
+  bottom: 90px;
 }
 
 .farmButton {
   background-image: url("/src/assets/images/buttons/earn.png");
-  width: 70px;
+  width: 30%;
+  min-width: 150px;
+  max-width: 190px;
   aspect-ratio: 1;
   background-size: contain;
   background-repeat: no-repeat;
