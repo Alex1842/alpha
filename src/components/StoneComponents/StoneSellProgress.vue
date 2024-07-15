@@ -1,27 +1,28 @@
 <template>
   <div class="col-md-12 bordered">
     <div id="progress-bar-container">
-      <div id="progress-bar" :style="{ width: progress + '%' }">
-        <div class="item-price"> {{ currentEarn.toFixed(2) }}&nbsp;$</div>
+      <div id="progress-bar" :style="{ width: getProgressById(stoneId) + '%' }">
+      
+        <div class="item-price">{{ getStoneValueById(stoneId).toFixed(2) }}&nbsp;$</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: 'StoneProgress',
+  name: "StoneSellProgress",
   props: {
-    progress: {
+    stoneId: {
       type: Number,
-      required: true
+      required: true,
     },
-    currentEarn: {
-      type: Number,
-      required: true
-    }
   },
-}
+  computed: {
+    ...mapGetters(["getProgressById","getStoneValueById"]),
+  },
+};
 </script>
 <style>
 #progress-bar-container {

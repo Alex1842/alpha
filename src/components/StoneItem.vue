@@ -1,180 +1,90 @@
 <template>
-  <div class="d-flex flex-column item">
-    <div class="row flex-grow-1 align-items-center">
-      <div class="col-3">
-        <StoneImage :img="stoneImg" :amount="stone.amount" @click="sellStone"
-          :disabled="isProgressing || stone.amount < 1" />
-      </div>
-      <div class="col-6 d-flex flex-row" style="padding:0;">
-        <div class="position-relative" style="width: 100%">
-          <div class="item-info flex-column">
-            <div class="item-name">{{ stone.name }}</div>
-            <StoneProgress :progress="progress" :currentEarn="currentEarn" />
-          </div>
+  <div class="item d-flex row flex-grow-1 align-items-center">
+    <div class="col-3">
+      <StoneImage :img="stoneImg" :stoneId="stoneId" />
+    </div>
+    <div class="col-6 d-flex flex-row" style="padding: 0">
+      <div class="position-relative" style="width: 100%">
+        <div class="item-info flex-column">
+          <div class="item-name">{{ getStoneNameById(stoneId) }}</div>
+          <StoneSellProgress :stoneId="stoneId" :progress="progress" />
         </div>
       </div>
-      <div class="col-3">
-        <StoneLevel :id="stone.id" :level="stone.level" :chance="chance" :background="levelWave" />
-        <StoneLevelUpgrade :id="stone.id" :coins="coins" :currentPrice="currentPrice" @click="upgradeStone" />
-      </div>
+    </div>
+    <div class="col-3">
+      <StoneLevel v-if="upgradeContition" :stoneId="stoneId" :background="levelWave" />
+      <StoneLevelUpgrade v-if="this.stoneId != 0" :stoneId="stoneId" />
     </div>
   </div>
 </template>
 <script>
-import StoneImage from './StoneComponents/StoneImage.vue';
-import StoneLevel from './StoneComponents/StoneLevel.vue';
-import StoneLevelUpgrade from './StoneComponents/StoneLevelUpgrade.vue';
-import StoneProgress from './StoneComponents/StoneProgress.vue';
+import { mapGetters } from "vuex";
+import StoneImage from "./StoneComponents/StoneImage.vue";
+import StoneLevel from "./StoneComponents/StoneLevel.vue";
+import StoneLevelUpgrade from "./StoneComponents/StoneLevelUpgrade.vue";
+import StoneSellProgress from "./StoneComponents/StoneSellProgress.vue";
 export default {
-  name: 'StoneItem',
+  name: "StoneItem",
   components: {
     StoneImage,
     StoneLevel,
     StoneLevelUpgrade,
-    StoneProgress
+    StoneSellProgress,
   },
   props: {
-    stone: {
-      type: Object,
-      required: true
-    },
     stoneImg: {
       type: String,
-      required: true
+      required: true,
     },
-    coins: {
+    stoneId: {
       type: Number,
-      required: true
+      required: true,
     },
-    chance: {
-      type: Number,
-      required: true
-    }
   },
   data() {
     return {
       progress: 0,
       isProgressing: false,
       intervalId: null,
-      tier: 0,
-      tierMap: {
-        0: 'red',
-        1: 'green',
-        2: 'blue',
-        3: 'yellow',
-        4: 'pink'
-      }
     };
   },
   computed: {
-    currentPrice() {
-      return this.calculatePrice(this.stone.price, 1.15, this.stone.level);
-    },
-    currentEarn() {
-      return this.calculateEarn(this.stone.earn, 1.05, this.stone.level);
-    },
-    currentChance() {
-      return this.currentTier.tier * .1;
-    },
-    currentTier() {
-      const level = this.stone.level;
-      const maxLevel = this.stone.levelCap;
-      const tier = Math.floor(level / maxLevel);
-      let percentage = 50 - ((level % maxLevel / maxLevel) * 50);
-      if (level !== 0 && level % maxLevel === 0) {
-        percentage = 0;
-      }
-      return { percentage, tier }
-    },
+    ...mapGetters(["tierMap", "getTierById", "getStoneNameById", "getChanceType"]),
+
     levelWave() {
-      const color = this.tierMap[this.currentTier.tier] || 'black';
+      const currentTier = this.getTierById(this.stoneId);
+      const color = this.tierMap[currentTier] || "black";
       const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="${color}" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,218.7C384,235,480,245,576,229.3C672,213,768,171,864,138.7C960,107,1056,85,1152,85.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>`;
       const encodedSVG = encodeURIComponent(svgData);
       const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
-      return { '--background': background };
-    }
-  },
-  methods: {
-    upgradeStone() {
-      if (this.coins >= this.currentPrice) {
-        this.$emit('upgrade', this.stone.id, this.currentPrice);
-        this.setProgressLevel();
+      return { "--background": background };
+    },
+    upgradeContition() {
+      
+      if (this.stoneId == 0 && this.getChanceType == 0) {
+        return false;
       }
-    },
-    getMoney() {
-      this.$emit('reward', this.stone.id, this.currentEarn);
-    },
-    sellStone() {
-      if (this.isProgressing || this.stone.amount < 1) return;
-      this.progress = 0;
-      this.isProgressing = true;
-
-      const intervalDuration = 100;
-      const progressIncrement = 100 / (this.stone.speed * 1000 / intervalDuration);
-      this.intervalId = setInterval(() => {
-        this.progress += progressIncrement;
-
-        if (this.progress >= 100) {
-          this.getMoney();
-          this.progress = 100;
-          clearInterval(this.intervalId);
-          setTimeout(() => {
-            this.progress = 0;
-            this.isProgressing = false;
-          }, 100);
-        }
-      }, intervalDuration);
-    },
-    calculatePrice(basePrice, growthRate, currentOwned) {
-      return basePrice * Math.pow(growthRate, currentOwned);
-    },
-    calculateEarn(baseEarn, growthRate, currentOwned) {
-      return baseEarn * Math.pow(growthRate, currentOwned);
-    },
-    setProgressLevel() {
-      const progressContainer = document.getElementById(`progress-container-${this.stone.id}`);
-      const progressWave = progressContainer.querySelector('.progress-wave');
-      const percentage = this.currentTier.percentage;
-      const newTier = this.currentTier.tier;
-      if (percentage >= 0) {
-        progressWave.style.transform = `translateY(${percentage}%)`;
-        if (percentage == 0) {
-          this.tier = newTier;
-          //this.$emit('updateProbs')
-          setTimeout(function () {
-            progressWave.style.transform = `translateY(50%)`;
-            progressContainer.classList.add('upgraded');
-            
-            progressContainer.addEventListener('animationend', function () {
-              progressContainer.classList.remove("upgraded");
-            });
-          }, 200)
-        }
-      }
+      return true;
     },
   },
-  mounted() {
-    this.setProgressLevel();
-  },
-  emits: ['reward', 'upgrade', 'updateProbs']
 };
 </script>
 <style>
 .item {
   padding: 14px;
   background-image: url("/src/assets/images/background/workerbg.png");
-
   background-repeat: no-repeat;
   width: 495px;
   max-width: calc(100vw - 40px);
+  margin-left: 0 !important;
+  background-size: 100% 100%;
 }
 
 .item:last-child {
   border-bottom: none;
 }
 
-
-*[disabled=true] {
+*[disabled="true"] {
   opacity: 0.2;
 }
 

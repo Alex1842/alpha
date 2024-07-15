@@ -1,36 +1,62 @@
 <template>
-  <div class="item-icon position-relative">
+  <div
+    class="item-icon position-relative"
+    @click="sell(stoneId)"
+    :disabled="stoneAmount < 1 || processing"
+  >
     <img class="floating-element" :src="img" alt="Dynamic Image" />
-    <div class="item-amount position-absolute">{{ amount }}</div>
+    <div class="item-amount position-absolute">{{ stoneAmount }}</div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'StoneImage',
+  name: "StoneImage",
   props: {
+    stoneId: {
+      type: Number,
+      required: true,
+    },
     img: {
       type: String,
-      required: true
-    },
-    amount: {
-      type: Number,
-      required: true
+      required: true,
     },
   },
-}
+  computed: {
+    ...mapGetters(["getStoneAmountById", "getProgressingById"]),
+    stoneAmount() {
+      return this.getStoneAmountById(this.stoneId);
+    },
+    processing() {
+      return this.getProgressingById(this.stoneId);
+    },
+  },
+  methods: {
+    ...mapActions({ sell: "sellStone" }),
+  },
+};
 </script>
 <style>
-.item-icon[disabled=false] {
+div[disabled="false"] .floating-element {
+  border-radius: 10px;
+  animation: float 2s ease-in-out infinite;
+  border-radius: 10px;
+  animation: float 2s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: scale(1.05);
+  }
+}
+.item-icon[disabled="false"] {
   cursor: pointer;
 }
 .item-icon img {
   border: 3px solid #692222;
   outline: 1px solid #fdd627;
   outline-offset: -5px;
-  height: calc(10vw);
-  max-height: 80px;
-  min-height: 60px;
+  height: 60px;
 }
 
 .item-amount {

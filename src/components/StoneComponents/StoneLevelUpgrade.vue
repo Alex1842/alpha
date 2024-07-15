@@ -1,28 +1,48 @@
 <template>
-  <div class="item-upgrade position-absolute" :disabled="coins < currentPrice">
+  <div
+    class="item-upgrade position-absolute"
+    :disabled="cantPay"
+    :hidden="!isUpgradeAvailable(this.stoneId)"
+    @click="upgrade"
+  >
     <!-- ↑ -->
-    {{ currentPrice.toFixed(2) }}&nbsp;$
+    {{ this.upgradePrice }}&nbsp;$
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'StoneLevelUpgrade',
+  name: "StoneLevelUpgrade",
   props: {
-    id: {
+    stoneId: {
       type: Number,
-      required: true
+      required: true,
     },
-    coins: {
-      type: Number,
-      required: true
-    },
-    currentPrice: {
-      type: Number,
-      required: true
-    }
   },
-}
+  computed: {
+    ...mapGetters(["coins", "getActualUpgradePriceById", "isUpgradeAvailable"]),
+    upgradePrice() {
+      if (this.isUpgradeAvailable(this.stoneId)) {
+        return this.getActualUpgradePriceById(this.stoneId).toFixed(2);
+      } else {
+        return "MAX";
+      }
+    },
+    cantPay() {
+      return this.coins < this.upgradePrice;
+    },
+  },
+  methods: {
+    ...mapActions(["upgradeStone"]),
+    upgrade() {
+      this.upgradeStone({
+        stoneId: this.stoneId,
+        paymentAmount: this.upgradePrice,
+      });
+    },
+  },
+};
 </script>
 <style>
 .item-upgrade {
@@ -35,6 +55,5 @@ export default {
   bottom: 0;
   transform: rotate(307deg);
   z-index: 1;
-
 }
 </style>

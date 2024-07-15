@@ -1,66 +1,84 @@
 <template>
-  <div :id="'progress-container-' + id" class="progress-container">
+  <div :id="'progress-container-' + stoneId" class="progress-container">
     <div class="progress-wave" :style="background"></div>
-    <div class="item-level">
-      <span>{{ (chance*100).toFixed() }}%</span>
+    <div class="item-level d-flex">
+      <span :style="!isUpgradeAvailable(stoneId) ? { color: 'white' } : {}">{{
+        calculatedChance
+      }}</span>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'StoneLevel',
+  name: "StoneLevel",
   props: {
-    id: {
+    stoneId: {
       type: Number,
-      required: true
-    },
-    level: {
-      type: Number,
-      required: true
-    },
-    chance: {
-      type: Number,
-      required: true
+      required: true,
     },
     background: {
       type: Object,
-      required: true
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isProgressSet: false,
+    };
+  },
+  computed: {
+    ...mapGetters(["getChanceById", "isUpgradeAvailable"]),
+    calculatedChance() {
+      if (this.isUpgradeAvailable(this.stoneId)) {
+        return (this.getChanceById(this.stoneId) * 100).toFixed() + "%";
+      } else {
+        return "MAX";
+      }
+    },
+  },
+
+  methods: {
+    ...mapActions(["setProgressLevel"]),
+  },
+  mounted() {
+    if (!this.isProgressSet) {
+      this.setProgressLevel({ stoneId: this.stoneId });
+      this.isProgressSet = true;
     }
   },
-}
+};
 </script>
 <style>
 .item-level {
-  height: 5vw;
-  min-height: 30px;
-  max-height: 50px;
-  width: 75px;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   span {
-    font-size: 36px
+    line-height: normal;
+    font-size: 30px;
   }
 }
 
 @media only screen and (max-width: 600px) {
   .item-level {
     span {
-      font-size: 24px
+      font-size: 24px;
     }
   }
 }
 .progress-container.upgraded:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100px;
   height: 100%;
-  background-image: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0) 70%);
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0) 70%
+  );
   top: 0;
   left: -100px;
   animation: shine 1s linear;
@@ -80,8 +98,6 @@ export default {
   }
 }
 
-
-
 .progress-container {
   width: 100%;
   height: 56px;
@@ -94,14 +110,13 @@ export default {
 
 .progress-wave {
   position: absolute;
-  bottom: -5px;
+  bottom: -50px;
   width: 200%;
   height: 200%;
   background: var(--background);
   background-size: 50% 100px;
   animation: wave 2s linear infinite;
   transition: transform 0.1s ease-in;
-  transform: translateY(100%);
   opacity: 0.5;
 }
 
