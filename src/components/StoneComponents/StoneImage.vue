@@ -56,9 +56,7 @@ div[disabled="false"] .floating-element {
   border: 3px solid #692222;
   outline: 1px solid #fdd627;
   outline-offset: -5px;
-  height: calc(10vw);
-  max-height: 80px;
-  min-height: 60px;
+  height: 60px;
 }
 
 .item-amount {

@@ -16,7 +16,8 @@
       </div>
     </div>
   </section>
-  <FarmStone class="col-12"></FarmStone>
+  <CaveStone :stoneImages="stoneImages"></CaveStone>
+  <FarmStone v-if="1==0" class="col-12"></FarmStone>
 </template>
 
 <script>
@@ -25,6 +26,7 @@ import Background from "./components/Background.vue";
 import StoneItem from "./components/StoneItem.vue";
 import CoinsCounter from "./components/CoinsCounter.vue";
 import FarmStone from "./components/FarmStone.vue";
+import CaveStone from "./components/CaveStone.vue";
 
 export default {
   name: "App",
@@ -32,6 +34,7 @@ export default {
     Background,
     CoinsCounter,
     FarmStone,
+    CaveStone,
     StoneItem,
   },
   data() {
@@ -77,18 +80,11 @@ export default {
   margin: 0 10px;
 }
 
-@media only screen and (max-width: 850px) {
-  .store {
-    height: 550px;
-    overflow-y: scroll;
-  }
+.store {
+  height: 450px;
+  overflow-y: scroll;
 }
-@media only screen and (max-width: 750px) {
-  .store {
-    height: 450px;
-    overflow-y: scroll;
-  }
-}
+
 @media only screen and (max-width: 600px) {
   .store {
     height: 350px;

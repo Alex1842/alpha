@@ -60,10 +60,7 @@ export default {
       return { "--background": background };
     },
     upgradeContition() {
-      console.log(
-        "this.stoneId == 0 && this.getChanceType == 0",
-        this.stoneId == 0 && this.getChanceType == 0
-      );
+      
       if (this.stoneId == 0 && this.getChanceType == 0) {
         return false;
       }

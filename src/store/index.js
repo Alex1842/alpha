@@ -268,6 +268,10 @@ export default createStore({
             const stone = state.stones[stoneId];
             return stone ? stone.active : false;
         },
+        getStoneImageById: (state) => (stoneId) => {
+            const stone = state.stones[stoneId];
+            return stone ? stone.active : false;
+        },
         getProgressById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
             return stone ? stone.progress : 0;
@@ -302,10 +306,10 @@ export default createStore({
             for (let i = 0; i < state.stones.length; i++) {
                 cumulativeSum += state.stones[i].absoluteChance;
                 if (random < cumulativeSum) {
-                    return i;
+                    return state.stones[i].id;
                 }
             }
-            return 0;
+            return state.stones[0].id;
 
         },
         getActualUpgradePriceById: (state) => (stoneId) => {
