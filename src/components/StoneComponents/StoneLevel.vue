@@ -1,7 +1,7 @@
 <template>
   <div :id="'progress-container-' + stoneId" class="progress-container">
     <div class="progress-wave" :style="background"></div>
-    <div class="item-level">
+    <div class="item-level d-flex">
       <span :style="!isUpgradeAvailable(stoneId) ? { color: 'white' } : {}">{{
         calculatedChance
       }}</span>
@@ -52,17 +52,12 @@ export default {
 </script>
 <style>
 .item-level {
-  height: 5vw;
-  min-height: 30px;
-  max-height: 50px;
-  width: 75px;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   span {
-    font-size: 36px;
+    line-height: normal;
+    font-size: 30px;
   }
 }
 

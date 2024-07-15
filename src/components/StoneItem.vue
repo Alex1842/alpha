@@ -1,26 +1,24 @@
 <template>
-  <div class="d-flex flex-column item">
-    <div class="row flex-grow-1 align-items-center">
-      <div class="col-3">
-        <StoneImage :img="stoneImg" :stoneId="stoneId" />
-      </div>
-      <div class="col-6 d-flex flex-row" style="padding: 0">
-        <div class="position-relative" style="width: 100%">
-          <div class="item-info flex-column">
-            <div class="item-name">{{ getStoneNameById(stoneId) }}</div>
-            <StoneSellProgress :stoneId="stoneId" :progress="progress" />
-          </div>
+  <div class="item d-flex row flex-grow-1 align-items-center">
+    <div class="col-3">
+      <StoneImage :img="stoneImg" :stoneId="stoneId" />
+    </div>
+    <div class="col-6 d-flex flex-row" style="padding: 0">
+      <div class="position-relative" style="width: 100%">
+        <div class="item-info flex-column">
+          <div class="item-name">{{ getStoneNameById(stoneId) }}</div>
+          <StoneSellProgress :stoneId="stoneId" :progress="progress" />
         </div>
       </div>
-      <div class="col-3">
-        <StoneLevel :stoneId="stoneId" :background="levelWave" />
-        <StoneLevelUpgrade :stoneId="stoneId" />
-      </div>
+    </div>
+    <div class="col-3">
+      <StoneLevel v-if="upgradeContition" :stoneId="stoneId" :background="levelWave" />
+      <StoneLevelUpgrade v-if="this.stoneId != 0" :stoneId="stoneId" />
     </div>
   </div>
 </template>
 <script>
-import {  mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import StoneImage from "./StoneComponents/StoneImage.vue";
 import StoneLevel from "./StoneComponents/StoneLevel.vue";
 import StoneLevelUpgrade from "./StoneComponents/StoneLevelUpgrade.vue";
@@ -51,7 +49,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["tierMap", "getTierById", "getStoneNameById"]),
+    ...mapGetters(["tierMap", "getTierById", "getStoneNameById", "getChanceType"]),
 
     levelWave() {
       const currentTier = this.getTierById(this.stoneId);
@@ -61,6 +59,16 @@ export default {
       const background = `linear-gradient(to bottom, rgba(0, 0, 255, 0) 40%, ${color} 53%), url('data:image/svg+xml;utf8,${encodedSVG}') repeat-x`;
       return { "--background": background };
     },
+    upgradeContition() {
+      console.log(
+        "this.stoneId == 0 && this.getChanceType == 0",
+        this.stoneId == 0 && this.getChanceType == 0
+      );
+      if (this.stoneId == 0 && this.getChanceType == 0) {
+        return false;
+      }
+      return true;
+    },
   },
 };
 </script>
@@ -68,10 +76,11 @@ export default {
 .item {
   padding: 14px;
   background-image: url("/src/assets/images/background/workerbg.png");
-
   background-repeat: no-repeat;
   width: 495px;
   max-width: calc(100vw - 40px);
+  margin-left: 0 !important;
+  background-size: 100% 100%;
 }
 
 .item:last-child {

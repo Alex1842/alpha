@@ -203,7 +203,7 @@ export default createStore({
         },
 
         farmStone({ commit, state, dispatch }, stoneId) {
-            console.log(stoneId)
+            console.log(state)
             commit('incrementCoins', state.basicFarm);
             commit('incrementStoneAmount', stoneId);
             dispatch('saveGame');
@@ -279,6 +279,9 @@ export default createStore({
         getTierById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];
             return stone ? stone.tier : 0;
+        },
+        getChanceType: (state) => {
+            return state.chanceType;
         },
         getChanceById: (state) => (stoneId) => {
             const stone = state.stones[stoneId];

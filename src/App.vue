@@ -2,7 +2,7 @@
   <Background></Background>
   <CoinsCounter></CoinsCounter>
   <section>
-    <div class="d-flex row">
+    <div class="d-flex">
       <div class="store col-12">
         <template v-for="(stone, i) in stones" :key="stone.id">
           <StoneItem
@@ -73,9 +73,6 @@ export default {
 </script>
 
 <style>
-.farmButton:hover {
-  transform: scale(1.1);
-}
 .store {
   margin: 0 10px;
 }
