@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkalpha"]=self["webpackChunkalpha"]||[]).push([[523],{523:function(e,p,a){e.exports=a.p+"img/G2.ee66bd59.png"}}]);
