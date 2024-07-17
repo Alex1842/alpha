@@ -1,23 +1,25 @@
 <template>
-  <Background></Background>
-  <CoinsCounter></CoinsCounter>
-  <section>
-    <div class="d-flex">
-      <div class="store col-12">
-        <template v-for="(stone, i) in stones" :key="stone.id">
-          <StoneItem
-            v-if="isActive(stone.id)"
-            :stoneId="stone.id"
-            :stoneImg="stoneImages[i]"
-          >
-          </StoneItem>
-        </template>
-        <button @click="changeChanceType">Change percent type</button>
+  <div id="gameArea">
+    <Background></Background>
+    <CoinsCounter></CoinsCounter>
+    <section style="margin-top: 8px;">
+      <div class="d-flex">
+        <div class="store col-12">
+          <template v-for="(stone, i) in stones" :key="stone.id">
+            <StoneItem
+              v-if="isActive(stone.id)"
+              :stoneId="stone.id"
+              :stoneImg="stoneImages[i]"
+            >
+            </StoneItem>
+          </template>
+        </div>
       </div>
-    </div>
-  </section>
-  <CaveStone :stoneImages="stoneImages"></CaveStone>
-  <FarmStone v-if="1==0" class="col-12"></FarmStone>
+    </section>
+    <!-- <button @click="changeChanceType">Change percent type</button> -->
+    <CaveStone :stoneImages="stoneImages"></CaveStone>
+    <FarmStone v-if="1 == 0" class="col-12"></FarmStone>
+  </div>
 </template>
 
 <script>
@@ -76,6 +78,31 @@ export default {
 </script>
 
 <style>
+@media only screen and (min-width: 1170px), only screen and (min-height: 962px) {
+  #gameArea {
+    max-height: 962px;
+    height: 100%;
+    width: 100%;
+    max-width: 1170px;
+  }
+}
+
+@media only screen and (min-width: 1170px) {
+  #gameArea {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    bottom: 0;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+  }
+}
+@media only screen and (max-width: 1170px) and (min-height: 962px) {
+  .store {
+    top: calc(100vh - 962px);
+  }
+}
+
 .store {
   margin: 0 10px;
 }

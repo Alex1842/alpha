@@ -206,6 +206,8 @@ export default createStore({
             console.log(state)
             commit('incrementCoins', state.basicFarm);
             commit('incrementStoneAmount', stoneId);
+
+            state.stones = [...state.stones];
             dispatch('saveGame');
 
         },
