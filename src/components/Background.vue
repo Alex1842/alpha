@@ -27,15 +27,14 @@ body {
 }
 
 .background {
-    position: absolute;
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-image: url("/src/assets/images/background/bg_v1.png");
-    background-size: cover;
-    background-position: center;
+    background-image: url("/src/assets/images/background/bg_v2.png");
+    background-size: 1157px;
+    background-position: center bottom;
 }
 
 .background .water {

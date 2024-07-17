@@ -53,9 +53,9 @@ export default {
 #caveStone_container {
   position: fixed;
   left: 50%;
-  bottom: 24.5vh;
+  bottom: 162px;
   transform: translateX(-50%);
-  height: 100px;
+  height: 77px;
   aspect-ratio: 1;
   cursor: pointer;
   opacity: 0.8;
