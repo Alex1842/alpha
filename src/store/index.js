@@ -9,7 +9,7 @@ const UPGRADE_WAVE_SHIFT = -45;
 export default createStore({
     state: {
         coins: 0,
-        basicFarm: 250,
+        basicFarm: 0,
         chanceType: 0,
         stones: baseData.stones,
         tierMap: baseData.tierMap,
@@ -204,7 +204,7 @@ export default createStore({
 
         farmStone({ commit, state, dispatch }, stoneId) {
             console.log(state)
-            commit('incrementCoins', state.basicFarm);
+                //commit('incrementCoins', state.basicFarm);
             commit('incrementStoneAmount', stoneId);
 
             state.stones = [...state.stones];

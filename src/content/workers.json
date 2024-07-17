@@ -1,6 +1,6 @@
 {
     "stones": [{
-            "name": "Quartz Stone",
+            "name": "Quartz",
             "icon": "G1",
             "upgradePrice": 1,
             "value": 1,
@@ -8,15 +8,15 @@
             "levelCap": 2
         },
         {
-            "name": "Dawn Ruby",
+            "name": "Ruby",
             "icon": "G2",
-            "upgradePrice": 10,
-            "value": 5,
+            "upgradePrice": 3,
+            "value": 2,
             "speed": 2,
             "levelCap": 2
         },
         {
-            "name": "Moon Crater Opal",
+            "name": "Opal",
             "icon": "G3",
             "upgradePrice": 50,
             "value": 20,
@@ -24,7 +24,7 @@
             "levelCap": 2
         },
         {
-            "name": "Smoldering Topaz",
+            "name": "Topaz",
             "icon": "G4",
             "upgradePrice": 100,
             "value": 50,
@@ -32,7 +32,7 @@
             "levelCap": 2
         },
         {
-            "name": "Starlight Diamond",
+            "name": "Diamond",
             "icon": "G5",
             "upgradePrice": 500,
             "value": 200,
@@ -40,7 +40,7 @@
             "levelCap": 2
         },
         {
-            "name": "Vortex Garnet",
+            "name": "Garnet",
             "icon": "G6",
             "upgradePrice": 1000,
             "value": 300,
@@ -48,7 +48,7 @@
             "levelCap": 20
         },
         {
-            "name": "Cosmic Sapphire",
+            "name": "Sapphire",
             "icon": "G7",
             "upgradePrice": 2000,
             "value": 500,
@@ -56,7 +56,7 @@
             "levelCap": 20
         },
         {
-            "name": "Mystic Agate",
+            "name": "Agate",
             "icon": "G8",
             "upgradePrice": 5000,
             "value": 1000,
@@ -64,7 +64,7 @@
             "levelCap": 20
         },
         {
-            "name": "Galaxy Amethyst",
+            "name": "Amethyst",
             "icon": "G9",
             "upgradePrice": 10000,
             "value": 2000,
@@ -73,16 +73,25 @@
         }
     ],
     "tierMap": {
-        "0": "#008000",
-        "1": "#007d00",
-        "2": "#4d7300",
-        "3": "#6d5700",
-        "4": "#8c3d00",
-        "5": "#b41800",
-        "6": "#cf0000",
-        "7": "#ae0046",
-        "8": "#8f006f",
-        "9": "#ad00ab",
-        "10": "#de00ef"
+        "0": "#00FF00",
+        "1": "#00E500",
+        "2": "#00CC00",
+        "3": "#00B200",
+        "4": "#009900",
+        "5": "#33CC33",
+        "6": "#66FF66",
+        "7": "#99FF33",
+        "8": "#CCCC00",
+        "9": "#FFCC00",
+        "10": "#FF9900",
+        "11": "#FF6600",
+        "12": "#FF3300",
+        "13": "#FF0000",
+        "14": "#E60000",
+        "15": "#CC0000",
+        "16": "#B20000",
+        "17": "#990000",
+        "18": "#800000",
+        "19": "#660000"
     }
 }

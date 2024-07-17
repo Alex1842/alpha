@@ -64,11 +64,11 @@ div[disabled="false"] .floating-element {
   background: brown;
   color: yellow;
   border-radius: 50%;
-  height: 20px;
+  height: 23px;
   aspect-ratio: 1;
-  padding: 3px;
-  font-weight: 500;
   right: -3px;
   bottom: -3px;
+  text-align: center;
+  line-height: 1.85;
 }
 </style>

@@ -74,7 +74,7 @@ export default {
   padding: 14px;
   background-image: url("/src/assets/images/background/workerbg.png");
   background-repeat: no-repeat;
-  width: 495px;
+  width: 450px;
   max-width: calc(100vw - 40px);
   margin-left: 0 !important;
   background-size: 100% 100%;
@@ -96,7 +96,7 @@ export default {
 }
 
 .item-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 </style>
